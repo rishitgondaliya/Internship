@@ -1,6 +1,6 @@
 // object literals
 
-const mySym = Symbol("Key1")
+const mySym = Symbol("Key_1")
 
 const user = {
     name: "Rishit",

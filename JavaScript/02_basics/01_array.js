@@ -1,5 +1,5 @@
 // const arr = [0, 1, 2, 3, 4, 5]
-const arr = new Array(1, 2, 3, 4)
+const arr = new Array(1, 2, 3, 4, 5)
 
 // console.log(arr[2])
 

@@ -1,4 +1,4 @@
-const marvel = ["thor", "iron man", "spider man"]
+const marvel = ["thor", "iron man", "spiderman"]
 const dc = ["superman", "flash", "batman"]
 
 // marvel.push(dc) // whole array will be added as a single element

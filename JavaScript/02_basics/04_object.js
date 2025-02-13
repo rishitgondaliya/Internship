@@ -3,7 +3,7 @@ const tinderUser = {} // non-singletone
 
 tinderUser.id = "123rj"
 tinderUser.name = "Rishit"
-tinderUser.isLoggedIn = false
+tinderUser.isLoggedIn = true
 
 // console.log(tinderUser)
 
@@ -21,5 +21,5 @@ const obj1 = {1: "a", 2: "b"}
 const obj2 = {3: "A", 4: "B"}
 
 // const obj3 = {obj1, obj2}
-const obj3 = Object.assign(obj1, obj2)
+const obj3 = Object.assign({}, obj1, obj2)
 console.log(obj3)
