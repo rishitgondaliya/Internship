@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>htnml Events </title>
+</head>
+<body style="background-color: #414141; color: aliceblue;">
+    <h2>Amazing image</h2>
+    <div >
+        <ul id="images">
+            <li><img width="200px" id="photoshop" src="https://images.pexels.com/photos/3561339/pexels-photo-3561339.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt="photoshop"></li>
+            <li><img width="200px" id="japan" src="https://images.pexels.com/photos/3532553/pexels-photo-3532553.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
+            <li><img width="200px" id="river" src="https://images.pexels.com/photos/3532551/pexels-photo-3532551.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
+            <li><img width="200px" id="owl" src="https://images.pexels.com/photos/3532552/pexels-photo-3532552.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt="" ></li>
+            <li><img width="200px" id="prayer" src="https://images.pexels.com/photos/2522671/pexels-photo-2522671.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt=""></li>
+            <li><a style="color: aliceblue;" href="https://google.com" id="google">Google</a></li>
+        </ul>
+   </div>
+</body>
+<script>
+    //document.getElementById('owl').onclick = function(){
+    //   alert("owl clicked")
+    //}
+
+    // attachEvent()
+    // jQuery - on
+
+    // type, timestamp, defaultPrevented
+    // target, toElement, srcElement, currentTarget,
+    // clientX, clientY, screenX, screenY
+    // altkey, ctrlkey, shiftkey, keyCode
+
+    //document.getElementById('owl').addEventListener('click', function(e) {
+    //    console.log(e);
+    //    console.log(e.timeStamp)
+    //    console.log(e.type)
+    //    console.log(e.target)
+    //    console.log(e.srcElement)
+    //    console.log(e.clientX)
+    //    console.log(e.clientY)
+    //}, false)
+
+    // event bubbling -> child to parent
+    // 1-> owl clicked 
+    // 2-> click inside images ul
+
+    //document.getElementById('images').addEventListener('click', function(e) {
+    //    console.log("click inside images ul");
+    //}, false)
+    //
+    //document.getElementById('owl').addEventListener('click', function(e) {
+    //    console.log("owl clicked");
+    //    e.stopPropagation()
+    //}, false)
+
+    // event capturing -> parent to child
+    // 1-> click inside images ul
+    // 2-> owl clicked 
+
+    //document.getElementById('images').addEventListener('click', function(e) {
+    //    console.log("click inside images ul");
+    //}, false)
+//
+    //document.getElementById('owl').addEventListener('click', function(e) {
+    //    console.log("owl clicked");
+    //    e.stopPropagation()//parent event won't work
+    //}, false)
+
+    //document.getElementById('google').addEventListener('click', (e) => {
+    //    e.preventDefault()
+    //    console.log("google clicked");
+    //})
+
+    document.querySelector('#images').addEventListener('click', (e) => {
+        console.log(e);
+        console.log(e.target);
+        console.log(e.target.tagName);
+        //remove.remove() -> will remove whole list when clicked on ul
+        if(e.target.tagName === 'IMG'){
+            console.log(e.target.id)
+            let remove = e.target.parentNode
+            remove.remove()
+        }
+        //remove.parentNode.removeChild(remove)
+    })
+</script>
+</html>
