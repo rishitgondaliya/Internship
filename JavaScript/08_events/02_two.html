@@ -10,17 +10,25 @@
     <button id="stop">Stop</button>
 </body>
 <script>
+    // executes after specific time delay
+    //setTimeout(() => {
+    //    console.log("Rishit")
+    //}, 2000)
+
     const sayRishit = function(){
         console.log("Rishit");
     }
-    const changeText = function(){
-        document.querySelector('h1').innerHTML = "best JS series"
-    }
 
+    //setTimeout(sayRishit, 3000)
+
+    const changeText = function(){
+        document.querySelector('h1').innerHTML = "Good morning!"
+    }
+    
     const changeMe = setTimeout(changeText, 2000)
 
-    document.querySelector('#stop').addEventListener('click', function(){
-        clearTimeout(changeMe)
+    document.getElementById('stop').addEventListener('click',() => {
+        clearTimeout(changeMe) //stop execution
         console.log("STOPPED")
     })
 </script>
