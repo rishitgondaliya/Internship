@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React</title>
+</head>
+<body>
+    <button>Button Clicked</button>
+    <p id="demo"></p>
+</body>
+<script>
+    //class React {
+    //    constructor(){
+    //        this.library = "React"
+    //        this.server = "https://localhost:300"
+//
+    //        //requirement
+    //        document
+    //            .querySelector('button')
+    //            .addEventListener('click', this.handleClick.bind(this))
+//
+    //    }
+    //    handleClick(){
+    //        console.log("button clicked");
+    //        console.log(this.server);
+    //    }
+    //}
+//
+    //const app = new React()
+
+    //const person = {
+    //    firstName:"John",
+    //    lastName: "Doe",
+    //    display: function () {
+    //      let x = document.getElementById("demo");
+    //      x.innerHTML = this.firstName + " " + this.lastName; // undefined
+    //    }
+    //  }
+    //  
+    //  setTimeout(person.display, 3000);
+
+    const person = {
+        firstName:"John",
+        lastName: "Doe",
+        display: function () {
+          let x = document.getElementById("demo");
+          x.innerHTML = this.firstName + " " + this.lastName;
+        }
+      }
+      
+      setTimeout(person.display.bind(person), 3000);
+</script>
+</html>
+
+<!-- bind:  -->
+<!-- With the bind() method, an object can borrow a method from another object. -->
+<!-- Sometimes the bind() method has to be used to prevent losing this -->
