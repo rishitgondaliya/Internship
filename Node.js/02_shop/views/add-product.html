@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add-product</title>
-    <link rel="stylesheet" href="../public/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <header class="main-header">
-        <nav class="nav">
-          <ul class="ul">
-            <li class="item"><a href="/">Shop</a></li>
-            <li class="item"><a href="/add-product">Add Product</a></li>
-          </ul>
-        </nav>
-      </header>
+      <nav class="nav">
+        <ul class="ul">
+          <li class="item"><a href="/">Shop</a></li>
+          <li class="item"><a href="/add-product">Add Product</a></li>
+        </ul>
+      </nav>
+    </header>
 
     <main>
-        <form action="/add-product" method="post">
-            <label for="name">Name:</label>
-            <input type="text" name="name">
-            <button type="submit">Add Product</button>
-        </form>
+      <form action="/add-product" method="POST">
+        <div class="input-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" />
+        </div>
+        <button type="submit">Add Product</button>
+      </form>
     </main>
-</body>
+  </body>
 </html>
