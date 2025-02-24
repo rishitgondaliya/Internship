@@ -1,23 +1,70 @@
 body{
-    background-color: aqua;
+    margin: 3rem;
 }
+
 .main-header{
     background-color: #b5b2b2;
     padding: 10px;
+    border-radius: 1rem;
+    max-width: 700px;
+    margin: 0px auto;
 }
+
 .ul{
     list-style-type: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: larger;
+    font-size: 1.5rem;
 }
+
 .item{
-    margin: 8px;
+    margin-right: 1.5rem;
 }
+
 a{
     text-decoration: none;
 }
+
 .item a:hover{
     color: rgb(255, 255, 255);
+}
+
+.shop {
+    max-width: 700px;
+    margin: 0px auto;
+    padding: 2rem;
+}
+
+.shop p {
+    font-size: 1.1rem;
+}
+
+form {
+    margin-top: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+#name {
+    border-radius: .25rem;
+    height: 1.5rem;
+}
+
+label{
+    margin-right: 1rem;
+    font-size: 1.3rem;
+}
+
+button {
+    margin-top: 3rem;
+    font-size: 1.2rem;
+    padding: .25rem .5rem;
+    border-radius: .25rem;
 }
