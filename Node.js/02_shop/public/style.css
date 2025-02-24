@@ -1,0 +1,23 @@
+body{
+    background-color: aqua;
+}
+.main-header{
+    background-color: #b5b2b2;
+    padding: 10px;
+}
+.ul{
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: larger;
+}
+.item{
+    margin: 8px;
+}
+a{
+    text-decoration: none;
+}
+.item a:hover{
+    color: rgb(255, 255, 255);
+}
