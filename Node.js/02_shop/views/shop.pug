@@ -1,0 +1,55 @@
+//- doctype html
+//- html(lang="en")
+//-     head
+//-         meta(charset="UTF-8")
+//-         meta(name="viewport", content="width=device-width, initial-scale=1.0")
+//-         //- title My shop
+//-         title #{title}
+//-         link(rel="stylesheet", href="style.css")
+//-     body 
+//-         header.main-header 
+//-             nav.nav 
+//-                 ul.ul 
+//-                     li.item 
+//-                         a(href="/") Shop 
+//-                     li.item 
+//-                         a(href="/add-product") Add Product 
+//-         main 
+//-             if prods.length > 0
+//-                 .grid 
+//-                     each product in prods
+//-                         article.card.product-item
+//-                             header.card-header  
+//-                                 h2.product-title #{product.name}
+//-                             .card-img 
+//-                                 img(src="https://www.neh.gov/sites/default/files/styles/medium/public/2018-06/openbooks.jpg?itok=kUdGYpx_", alt="A great book")
+//-                             .card-content 
+//-                                 h2.product-price Rs. #{product.price}
+//-                                 p.product-desc #{product.desc}
+//-                             .card-action    
+//-                                 button.btn Add to cart
+//-             else
+//-                 h1 No Products
+
+extends layouts/main.pug
+
+block title 
+    title  My Shop 
+
+block content 
+    main 
+        if prods.length > 0
+            .grid 
+                each product in prods
+                    article.card.product-item
+                        header.card-header  
+                            h2.product-title #{product.name}
+                        .card-img 
+                            img(src="https://www.neh.gov/sites/default/files/styles/medium/public/2018-06/openbooks.jpg?itok=kUdGYpx_", alt="A great book")
+                        .card-content 
+                            h2.product-price Rs. #{product.price}
+                            p.product-desc #{product.desc}
+                        .card-action    
+                            button.btn Add to cart
+        else
+            h1 No Products
