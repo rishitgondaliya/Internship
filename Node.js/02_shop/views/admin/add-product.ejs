@@ -1,0 +1,16 @@
+<%- include('../includes/main.ejs') %>
+    <main>
+      <form action="/add-product" method="POST">
+        <div class="input-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name"/>
+          <label for="price">Price:</label>
+          <input type="number" id="price" name="price"/>
+          <label for="desc">Description:</label>
+          <input type="text" id="desc" name="desc"/>
+        </div>
+        <button class="btn" type="submit">Add Product</button>
+      </form>
+    </main>
+  </body>
+</html>
