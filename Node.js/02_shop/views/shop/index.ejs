@@ -1,0 +1,33 @@
+<%- include('../includes/main.ejs') %>
+
+    <main>
+        <% if(prods.length > 0) { %>
+      <div class="grid">
+        <% for (let product of prods) { %>
+        <article class="card product-item">
+          <header class="card-header">
+            <h2 class="product-title"><%= product.name %></h2>
+          </header>
+          <div class="card-img">
+            <img
+              src="https://www.neh.gov/sites/default/files/styles/medium/public/2018-06/openbooks.jpg?itok=kUdGYpx_"
+              alt="A great book"
+            />
+          </div>
+          <div class="card-content">
+            <h2 class="product-price">Rs. <%= product.price %></h2>
+            <p class="product-desc"><%= product.desc %></p>
+          </div>
+          <div class="card-action">
+            <button class="btn">Add to cart</button>
+          </div>
+        </article>
+        <% } %>
+      </div>
+      <% } else { %>
+      <!-- If there are no products -->
+      <h1>No Products</h1>
+      <% } %>
+    </main>
+  </body>
+</html>
