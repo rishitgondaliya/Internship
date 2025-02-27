@@ -10,8 +10,8 @@
           </header>
           <div class="card-img">
             <img
-              src="https://www.neh.gov/sites/default/files/styles/medium/public/2018-06/openbooks.jpg?itok=kUdGYpx_"
-              alt="A great book"
+              src="<%= product.imgUrl %>"
+              alt="<%= product.name %>"
             />
           </div>
           <div class="card-content">
@@ -19,14 +19,17 @@
             <p class="product-desc"><%= product.desc %></p>
           </div>
           <div class="card-action">
-            <button class="btn">Add to cart</button>
+            <form action="/cart" method="POST">
+              <button class="btn" type="submit">Add to Cart</button>
+              <input type="hidden" name="productId" value="<%= product.id %>">
+          </form>
           </div>
         </article>
         <% } %>
       </div>
       <% } else { %>
       <!-- If there are no products -->
-      <h1>No Products</h1>
+      <h1>No Products Found !</h1>
       <% } %>
     </main>
   </body>
