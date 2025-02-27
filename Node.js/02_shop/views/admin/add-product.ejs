@@ -1,13 +1,23 @@
 <%- include('../includes/main.ejs') %>
     <main>
-      <form action="/add-product" method="POST">
+      <form action="/admin/add-product" method="POST" class="form-control">
         <div class="input-group">
-          <label for="name">Name:</label>
-          <input type="text" id="name" name="name"/>
-          <label for="price">Price:</label>
-          <input type="number" id="price" name="price"/>
-          <label for="desc">Description:</label>
-          <input type="text" id="desc" name="desc"/>
+          <div class="inner-grp">
+            <div class="name">
+              <label for="name">Name:</label>
+            <input type="text" id="name" name="name"/>
+            </div>
+            <div class="price">
+              <label for="price">Price:</label>
+            <input type="number" id="price" name="price"/>
+            </div>
+          </div>
+          <div class="inner-grp2">
+            <label for="imgUrl">Image URL:</label>
+            <input type="text" id="imgUrl" name="imgUrl">
+            <label for="desc">Description:</label>
+            <textarea id="desc" name="desc"></textarea>
+          </div>
         </div>
         <button class="btn" type="submit">Add Product</button>
       </form>
