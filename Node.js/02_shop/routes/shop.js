@@ -28,7 +28,15 @@ app.get("/", shopController.getIndex);
 
 app.get('/products', shopController.getProducts)
 
+app.get('/products/delete')
+
+app.get('/products/:productId', shopController.getProduct)
+
 app.get('/cart', shopController.getCart)
+
+app.post('/cart', shopController.postCart)
+
+app.get('/orders', shopController.getOrders)
 
 app.get('/checkout', shopController.getCheckout)
 
