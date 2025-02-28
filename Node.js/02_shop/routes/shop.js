@@ -36,6 +36,8 @@ app.get('/cart', shopController.getCart)
 
 app.post('/cart', shopController.postCart)
 
+app.post('/delete-cart-item', shopController.postDeleteCartItem)
+
 app.get('/orders', shopController.getOrders)
 
 app.get('/checkout', shopController.getCheckout)
