@@ -1,4 +1,40 @@
 <%- include('../includes/main.ejs') %>
 
+    <main>
+        <% if(products.length > 0) { %>
+            <div class="grid">
+                <% products.forEach(p => { %>
+                    <article class="card product-item">
+                        <header class="card-header">
+                          <h2 class="product-title"><%= p.productData.name %></h2>
+                        </header>
+                        <div class="card-img">
+                          <img
+                            src="<%= p.productData.imgUrl %>"
+                            alt="<%= p.productData.name %>"
+                          />
+                        </div>
+                        <div class="card-content">
+                          <h2 class="product-price">Rs. <%= p.productData.price %>/-</h2>
+                          <p class="product-desc"><%= p.productData.desc %></p>
+                        </div>
+                        <div class="card-action">
+                          <div class="btn-grp">
+                            <form action="/delete-cart-item" method="POST">
+                                <input type="hidden" name="productId" value="<%= p.productData.id%>">
+                                <button class="btn" type="submit">
+                                    Remove from cart
+                                </button>
+                            </form>
+                            <button class="btn">Qty. = <%= p.qty %></button>
+                          </div>
+                        </div>
+                      </article>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <h1 style="text-align: center;">Nothing in the cart! ☹️</h1>
+        <% } %>
+    </main>
 </body>
 </html>
