@@ -15,15 +15,19 @@
             />
           </div>
           <div class="card-content">
-            <h2 class="product-price">Rs. <%= product.price %></h2>
+            <h2 class="product-price">Rs. <%= product.price %>/-</h2>
             <p class="product-desc"><%= product.desc %></p>
           </div>
           <div class="card-action">
-            <a href="/products/<%= product.id %>" class="btn">Details</a>
-            <form action="/cart" method="POST">
-              <button class="btn" type="submit">Add to Cart</button>
-              <input type="hidden" name="productId" value="<%= product.id %>">
-          </form>
+            <div class="btn-grp">
+              <form action="/products/<%= product.id %>" method="GET">
+                <button class="btn" type="submit">Details</button>
+              </form>
+              <form action="/cart" method="POST">
+                <button class="btn" type="submit">Add to Cart</button>
+                <input type="hidden" name="productId" value="<%= product.id %>">
+              </form>
+            </div>
           </div>
         </article>
         <% } %>
