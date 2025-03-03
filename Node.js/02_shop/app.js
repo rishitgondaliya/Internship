@@ -46,18 +46,18 @@
 
 // app.listen(3000); //satrt the server
 
-
-
 // *************** Using controller *****************
 
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 
+const db = require("./util/database");
+
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
-const errorController = require('./controllers/error404')
+const errorController = require("./controllers/error404");
 
 const app = express();
 
@@ -66,8 +66,16 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // ejs
 app.set("view engine", "ejs");
-
 app.set("views", "views");
+
+// using MySQL database
+db.execute("SELECT * FROM products")
+    .then(result => {
+        console.log("data fetched successfully")
+    })
+    .catch(err => {
+        console.log(err)
+    });
 
 app.use(adminRoutes);
 app.use(shopRoutes);
