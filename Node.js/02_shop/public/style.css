@@ -246,6 +246,7 @@ main h1 {
   margin: 8rem auto;
   display: flex;
   box-shadow: 0 0 8px rgb(86, 85, 85);
+  border-radius: .5rem;
 }
 
 .pro-detail .pro-detail-img, .pro-detail .detail {
@@ -258,6 +259,7 @@ main h1 {
   width: 100%;
   min-height: 260px;
   max-height: 300px;
+  border-radius: .5rem;
 }
 
 .pro-detail .detail {
