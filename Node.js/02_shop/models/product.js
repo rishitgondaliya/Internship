@@ -20,86 +20,128 @@
 //     }
 // }
 
-// store data in a file using model
+// ----------store data in a file using model---------
 
-const fs = require("fs");
-const path = require("path");
+// const fs = require("fs");
+// const path = require("path");
 
-const Cart = require("./cart");
+// const Cart = require("./cart");
 
-const p = path.join(
-  path.dirname(process.mainModule.filename),
-  "data",
-  "products.json"
-);
+// const p = path.join(
+//   path.dirname(process.mainModule.filename),
+//   "data",
+//   "products.json"
+// );
 
-// retrive product details from local file
-const getProductsFromFile = (callback) => {
-  fs.readFile(p, (err, fileContent) => {
-    if (err) {
-      callback([]);
-    }
-    callback(JSON.parse(fileContent));
-  });
-};
+// // retrive product details from local file
+// const getProductsFromFile = (callback) => {
+//   fs.readFile(p, (err, fileContent) => {
+//     if (err) {
+//       callback([]);
+//     }
+//     callback(JSON.parse(fileContent));
+//   });
+// };
 
-module.exports = class Product {
-  constructor(id, name, imgUrl, price, desc) {
-    this.id = id;
-    this.name = name;
-    this.imgUrl = imgUrl;
-    this.price = price;
-    this.desc = desc;
-  }
+// module.exports = class Product {
+//   constructor(id, name, imgUrl, price, desc) {
+//     this.id = id;
+//     this.name = name;
+//     this.imgUrl = imgUrl;
+//     this.price = price;
+//     this.desc = desc;
+//   }
 
-  // save product to local file storage
-  save() {
-    getProductsFromFile((products) => {
-      // save existing product
-      if (this.id) {
-        const existingProductIndex = products.findIndex(
-          (prod) => prod.id === this.id
-        );
-        const updatedProducts = [...products];
-        updatedProducts[existingProductIndex] = this;
-        console.log("updated details", this);
-        fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
-          console.log(err);
-        });
-      } else {
-        // save new product
-        this.id = Math.random().toString();
-        products.push(this);
-        fs.writeFile(p, JSON.stringify(products), (err) => {
-          console.log(err);
-        });
-      }
-    });
-  }
+//   // save product to local file storage
+//   save() {
+//     getProductsFromFile((products) => {
+//       // save existing product
+//       if (this.id) {
+//         const existingProductIndex = products.findIndex(
+//           (prod) => prod.id === this.id
+//         );
+//         const updatedProducts = [...products];
+//         updatedProducts[existingProductIndex] = this;
+//         console.log("updated details", this);
+//         fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
+//           console.log(err);
+//         });
+//       } else {
+//         // save new product
+//         this.id = Math.random().toString();
+//         products.push(this);
+//         fs.writeFile(p, JSON.stringify(products), (err) => {
+//           console.log(err);
+//         });
+//       }
+//     });
+//   }
 
-  // fetch all product's detail
-  static fetchAll(callback) {
-    getProductsFromFile(callback);
-  }
+//   // fetch all product's detail
+//   static fetchAll(callback) {
+//     getProductsFromFile(callback);
+//   }
 
-  // find single product using product id
-  static findById(id, cb) {
-    getProductsFromFile((products) => {
-      const product = products.find((p) => p.id === id);
-      cb(product);
-    });
-  }
+//   // find single product using product id
+//   static findById(id, cb) {
+//     getProductsFromFile((products) => {
+//       const product = products.find((p) => p.id === id);
+//       cb(product);
+//     });
+//   }
 
-  // delete product
-  static deleteProductById(id) {
-    getProductsFromFile((products) => {
-      const product = products.find((p) => p.id === id);
-      const updatedProducts = products.filter((prod) => prod.id !== id);
-      fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
-        if (!err) {
-          Cart.deleteProduct(id, product.price);
-        }
-      });
-    });
-  }
-};
+//   // delete product
+//   static deleteProductById(id) {
+//     getProductsFromFile((products) => {
+//       const product = products.find((p) => p.id === id);
+//       const updatedProducts = products.filter((prod) => prod.id !== id);
+//       fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
+//         if (!err) {
+//           Cart.deleteProduct(id, product.price);
+//         }
+//       });
+//     });
+//   }
+// };
+
+// -----------Using MySQL database-----------
+
+// const db = require("../util/database");
+
+// module.exports = class Product {
+//   constructor(id, name, price, imgUrl, desc) {
+//     this.id = id;
+//     this.name = name;
+//     this.price = price;
+//     this.imgUrl = imgUrl;
+//     this.desc = desc;
+//   }
+
+//   // save product to MySQL database
+
+//   save() {
+//     return db.execute(
+//       "INSERT INTO products (name, price, imgUrl, `desc`) VALUES (?, ?, ?, ?)",
+//       [this.name, this.price, this.imgUrl, this.desc]
+//     );
+//   }
+
+//   // fetch all product's detail
+//   static fetchAll() {
+//     return db.execute("SELECT * FROM products");
+//   }
+
+//   // find single product using product id
+//   static findById(id) {
+//     return db.execute('SELECT * FROM products WHERE products.id = ?',[id])
+//   }
+// };
+
+
+// --------- using Sequelize ----------
+
+const Sequelize = require('sequelize')
+
+const sequelize = require('../util/database')
+
+const Product = sequelize.define()
