@@ -144,4 +144,26 @@ const Sequelize = require('sequelize')
 
 const sequelize = require('../util/database')
 
-const Product = sequelize.define()
+const Product = sequelize.define('product', {  //model name, table schema(columns)
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true
+    },
+    name: Sequelize.STRING,
+    price: {
+        type: Sequelize.DOUBLE,
+        allowNull: false
+    },
+    imgUrl: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    desc: {
+        type: Sequelize.STRING,
+        allowNull: false
+    }
+})
+
+module.exports = Product
