@@ -40,6 +40,8 @@ app.post('/delete-cart-item', shopController.postDeleteCartItem)
 
 app.get('/orders', shopController.getOrders)
 
+app.post('/create-order', shopController.postOrder)
+
 app.get('/checkout', shopController.getCheckout)
 
 module.exports = app;
