@@ -2,9 +2,10 @@
 
     <main>
         <% if(products.length > 0) { %>
+          <h1>Your cart...</h1>
             <div class="grid">
                 <% products.forEach(p => { %>
-                    <article class="card product-item">
+                    <article class="card product-item cart">
                         <header class="card-header">
                           <h2 class="product-title"><%= p.name %></h2>
                         </header>
@@ -21,20 +22,23 @@
                         </div>
                         <div class="card-action">
                           <div class="btn-grp">
+                            <button class="btn">Qty : <%= p.cartItem.quantity %></button>
+                            <form action="/products/<%= p.id %>" method="GET">
+                              <button class="btn" type="submit">Details</button>
+                            </form>
                             <form action="/delete-cart-item" method="POST">
                                 <input type="hidden" name="productId" value="<%= p.id%>">
-                                <button class="btn" type="submit">
+                                <button class="btn delete" type="submit">
                                     Remove from cart
                                 </button>
                             </form>
-                            <button class="btn">Quantity = <%= p.cartItem.quantity %></button>
                           </div>
                         </div>
                       </article>
                       <% }) %>
                     </div>
-                    <form action="/create-order" method="POST">
-                      <button class="btn" type="submit">Order Now !</button>
+                    <form action="/create-order" method="POST" style="text-align: center; font-size: 2rem">
+                      <button class="btn" type="submit" style="font-size: 1.15rem">Order Now !</button>
                     </form>
         <% } else { %>
             <h1 style="text-align: center;">Nothing in the cart! ☹️</h1>
