@@ -1,24 +1,31 @@
 <%- include('../includes/main.ejs') %>
 
-    <main class="">
-        <% if (orders.length <= 0) { %>
-        <h1>Your purchased items will be displayed here.</h1>
+    <main>
+        <% if (!orders || orders.length === 0) { %>
+        <h1>You haven't placed any orders.</h1>
         <% } else {%>
-            <ul>
+            <h1>Your orders...</h1>
+            <div class="grid">
                 <% orders.forEach(order => { %>
-                    <li>
-                        <h1># <%= order.id %></h1>
-                        <ul>
-                            <% order.products.forEach(product => { %>
-                                <li>
-                                    <%= product.name %> (<%= product.orderItem.quantity %>)
-                                </li>
-                            <% }) %>
-                        </ul>
-                    </li>
+                    <% order.products.forEach(product => { %>
+                        <article class="card product-item order">
+                            <header class="card-header">
+                                <h2 class="product-title"><%= product.name %></h2>
+                            </header>
+                            <div class="order-img">
+                                <img src="<%= product.imgUrl %>" alt="<%= product.name %>"/>
+                            </div>
+                            <div class="card-content">
+                                <h2 class="product-price">Rs. <%= product.price %>/-</h2>
+                            </div>
+                            <div class="card-action">
+                                Qty : <%= product.orderItem ? product.orderItem.quantity : 0 %>
+                            </div>
+                        </article>
+                    <% }) %>
                 <% }) %>
-            </ul>
+            </div>
         <% } %>
-    </main>
+    </main>    
 </body>
 </html>
