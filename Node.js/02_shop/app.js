@@ -69,7 +69,6 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
 const errorController = require("./controllers/error404");
-const { name } = require("ejs");
 
 const app = express();
 
