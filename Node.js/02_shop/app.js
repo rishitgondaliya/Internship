@@ -62,8 +62,8 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
-const Order = require('./models/order')
-const OrderItem = require('./models/order-item')
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -159,7 +159,6 @@ User.hasMany(Order);
 Order.belongsToMany(Product, { through: OrderItem });
 // This creates a many-to-many relationship between `orders` and `products` using a junction table `orderItem`.
 // The `orderItem` table will have `orderId` and `productId` as foreign keys.
-
 
 sequelize
   // .sync({force: true})  // will drop existing and creates new table
