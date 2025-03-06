@@ -38,14 +38,17 @@ textContent -> all text including invisible text
 
 <!-- 
 HTMLCollection and Nodelist -> not completely array, looks like array   
-Nodelist -> use forEach
-HTMLCollection -> convert into array
+static Nodelist -> returned by querySelectorAll, use forEach, can be converted to array, it is not always live 
+means it does not automatically update when DOM changes
+Live Nodelist -> returned by Node.childNodes
+HTMLCollection -> should be converted into array, it is always live, meaning it reflects changes to the DOM in 
+real-time. 
 -->
 
 <!-- 
 getElementById
-getElementsByClassName
-getElementsByTagName
-querySelector
+getElementsByClassName -> returns HTMLColeection
+getElementsByTagName -> returns HTMLColeection
+querySelector -> returns single HTMLElement
 querySelectorAll  -> returns Nodelist
 -->
