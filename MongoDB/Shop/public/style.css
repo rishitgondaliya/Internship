@@ -142,6 +142,7 @@ main h1 {
 
 .card {
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.26);
+  /* border: 1px solid black; */
   border-radius: 0.5rem;
   margin-bottom: 2rem;
 }
@@ -165,9 +166,8 @@ main h1 {
 .card-img img {
   min-width: 14rem;
   max-width: 18rem;
-  /* min-height: 180px;
-  max-height: 200px; */
   height: 200px;
+  border-radius: 6px;
 }
 
 .card-action {
@@ -309,31 +309,13 @@ main h1 {
 .cart img {
   max-width: 14rem;
   height: 8rem;
+  border-radius: 6px;
 }
 
 .cart .card-action .btn {
   font-size: 1rem;
   padding: 2px;
   margin-right: 0.5rem;
-}
-
-.order {
-  width: 12rem;
-}
-
-.order h2 {
-  font-size: 1.1rem;
-}
-
-.order .order-img {
-  max-width: 10rem;
-  height: 6rem;
-  margin: 0px auto;
-}
-
-.order-img img {
-  width: 100%;
-  height: 6rem;
 }
 
 .order .card-action .btn {
@@ -350,4 +332,70 @@ main h1 {
 .delete:active {
   background-color: #ff0000;
   color: white;
+}
+
+.orders-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.order-card {
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  padding: 16px;
+  /* background-color: #f3f3f3; */
+  margin: 0 1rem;
+  width: max-content;
+}
+
+.order-header h2 {
+  font-weight: bold;
+  margin: 0.5rem 0 1rem;
+}
+
+.order-items {
+  /* display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); */
+  display: flex;
+  margin-left: 1rem;
+  gap: 1rem;
+  /* justify-content: center; */
+}
+
+.order-product-card {
+  width: 12rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #fff;
+}
+
+.order-product-img {
+  max-width: 10.5rem;
+  height: 6rem;
+  margin: 0px auto;
+}
+
+.order-product-img img {
+  max-width: 100%;
+  height: 6rem;
+  border-radius: 6px;
+}
+
+.order-product-details {
+  margin-top: 10px;
+}
+
+.order-product-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.order-product-price,
+.order-product-quantity {
+  font-size: 16px;
+  margin-top: 5px;
+  margin-bottom: 6px;
 }
