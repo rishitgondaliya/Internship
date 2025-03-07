@@ -9,20 +9,16 @@ app.get("/", shopController.getIndex);
 
 app.get('/products', shopController.getProducts)
 
-// app.get('/products/delete')
-
 app.get('/products/:productId', shopController.getProduct)
 
-// app.get('/cart', shopController.getCart)
+app.get('/cart', shopController.getCart)
 
 app.post('/cart', shopController.postCart)
 
-// app.post('/delete-cart-item', shopController.postDeleteCartItem)
+app.post('/delete-cart-item', shopController.postDeleteCartItem)
 
-// app.get('/orders', shopController.getOrders)
+app.get('/orders', shopController.getOrders)
 
-// app.post('/create-order', shopController.postOrder)
-
-// app.get('/checkout', shopController.getCheckout)
+app.post('/create-order', shopController.postOrder)
 
 module.exports = app;
