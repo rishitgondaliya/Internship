@@ -5,26 +5,32 @@
         <h1>You haven't placed any orders.</h1>
         <% } else {%>
             <h1>Your orders...</h1>
-            <div class="grid">
+            <section class="orders-container">
                 <% orders.forEach(order => { %>
-                    <% order.products.forEach(product => { %>
-                        <article class="card product-item order">
-                            <header class="card-header">
-                                <h2 class="product-title"><%= product.name %></h2>
-                            </header>
-                            <div class="order-img">
-                                <img src="<%= product.imgUrl %>" alt="<%= product.name %>"/>
-                            </div>
-                            <div class="card-content">
-                                <h2 class="product-price">Rs. <%= product.price %>/-</h2>
-                            </div>
-                            <div class="card-action">
-                                Qty : <%= product.orderItem ? product.orderItem.quantity : 0 %>
-                            </div>
-                        </article>
-                    <% }) %>
+                    <div class="order-card">
+                        <header class="order-header">
+                            <h2>Order - #<%= order._id %></h2>
+                        </header>
+                        <div class="order-items">
+                            <% order.items.forEach(product => { %>
+                                <article class="order-product-card">
+                                    <header class="order-product-header">
+                                        <h3 class="order-product-title"><%= product.name %></h3>
+                                    </header>
+                                    <div class="order-product-img">
+                                        <img src="<%= product.imgUrl %>" alt="<%= product.name %>">
+                                    </div>
+                                    <div class="order-product-details">
+                                        <p class="order-product-price">Rs. <%= product.price %>/-</p>
+                                        <p class="order-product-quantity">Qty: <%= product.quantity || 0 %></p>
+                                    </div>
+                                </article>
+                            <% }) %>
+                        </div>
+                    </div>
                 <% }) %>
-            </div>
+            </section>
+            
         <% } %>
     </main>    
 </body>
