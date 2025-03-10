@@ -18,8 +18,9 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use((req, res, next) => {
-  User.findById("67c83a44a112e80474f289df")
+  User.findById("67cad96be14de615b5f22e75")
     .then((user) => {
+      // console.log(user)
       req.user = new User(user.userName, user.email, user.cart, user._id);
       next();
     })
