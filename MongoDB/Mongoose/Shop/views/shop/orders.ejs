@@ -1,0 +1,37 @@
+<%- include('../includes/main.ejs') %>
+
+    <main>
+        <% if (!orders || orders.length === 0) { %>
+        <h1>You haven't placed any orders.</h1>
+        <% } else {%>
+            <h1>Your orders...</h1>
+            <section class="orders-container">
+                <% orders.forEach(order => { %>
+                    <div class="order-card">
+                        <header class="order-header">
+                            <h2>Order - #<%= order._id %></h2>
+                        </header>
+                        <div class="order-items">
+                            <% order.products.forEach(p => { %>
+                                <article class="order-product-card">
+                                    <header class="order-product-header">
+                                        <h3 class="order-product-title"><%= p.product.name %></h3>
+                                    </header>
+                                    <div class="order-product-img">
+                                        <img src="<%= p.product.imgUrl %>" alt="<%= p.product.name %>">
+                                    </div>
+                                    <div class="order-product-details">
+                                        <p class="order-product-price">Rs. <%= p.product.price %>/-</p>
+                                        <p class="order-product-quantity">Qty: <%= p.quantity || 0 %></p>
+                                    </div>
+                                </article>
+                            <% }) %>
+                        </div>
+                    </div>
+                <% }) %>
+            </section>
+            
+        <% } %>
+    </main>    
+</body>
+</html>

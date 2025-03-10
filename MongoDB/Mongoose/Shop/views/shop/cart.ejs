@@ -1,0 +1,51 @@
+<%- include('../includes/main.ejs') %>
+
+    <main>
+        <% if(products.length > 0) { %>
+          <h1>Your cart...</h1>
+            <div class="grid">
+                <% products.forEach(p => { %>
+                    <article class="card product-item cart">
+                        <header class="card-header">
+                          <h2 class="product-title"><%= p.productId.name %></h2>
+                        </header>
+                        <div class="card-img">
+                          <img
+                            
+                            src="<%= p.productId.imgUrl %>"
+                            alt="<%= p.productId.name %>" 
+                          />
+                        </div>
+                        <div class="card-content">
+                          <h2 class="product-price">Rs. <%= p.productId.price %>/-</h2>
+                          <p class="product-desc"><%= p.productId.desc %></p>
+                        </div>
+                        <div class="card-action">
+                          <div class="btn-grp">
+                            <button class="btn">Qty : <%= p.quantity %></button>
+                            <form action="/products/<%= p.productId._id %>" method="GET">
+                              <button class="btn" type="submit">Details</button>
+                            </form>
+                            <form action="/delete-cart-item" method="POST">
+                                <input type="hidden" name="productId" value="<%= p.productId._id%>">
+                                <button class="btn delete" type="submit">
+                                    Remove from cart
+                                </button>
+                            </form>
+                          </div>
+                        </div>
+                      </article>
+                      <% }) %>
+                    </div>
+                    <form action="/create-order" method="POST" style="text-align: center; font-size: 2rem">
+                      <button class="btn" type="submit" style="font-size: 1.15rem">Order Now !</button>
+                    </form>
+        <% } else { %>
+            <h1 style="text-align: center;">Nothing in the cart! ☹️</h1>
+        <% } %>
+    </main>
+</body>
+</html>
+
+<!-- p.productData.name -->
+<!-- p.name  -> sequelize -->

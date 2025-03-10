@@ -1,0 +1,40 @@
+<%- include('../includes/main.ejs') %>
+    <main>
+      <form 
+        action="/admin/<%= isEditing ? 'edit-product' : 'add-product' %>" 
+        method="POST" 
+        class="form-control"
+    >
+        <div class="input-group">
+          <div class="inner-grp">
+            <div class="name">
+              <label for="name">Name:</label>
+            <input type="text" id="name" name="updatedName" value="<%= isEditing ? product.name : '' %>"/>
+            </div>
+            <div class="price">
+              <label for="price">Price:</label>
+            <input type="number" id="price" name="updatedPrice" value="<%= isEditing ? product.price : '' %>"/>
+            </div>
+          </div>
+          <div class="inner-grp2">
+            <label for="imgUrl">Image URL:</label>
+            <input type="text" id="imgUrl" name="updatedImgUrl" value="<%= isEditing ? product.imgUrl : '' %>">
+            <img src="<%= isEditing ? product.imgUrl : '' %>" alt="No preview available">
+            <label for="desc">Description:</label>
+            <textarea id="desc" name="updatedDesc"><%= isEditing ? product.desc : '' %></textarea>
+          </div>
+        </div>
+        <% if(isEditing){ %>
+            <input type="hidden" value="<%= product._id %>" name="productId">
+        <% } %>
+        <button class="btn" type="submit">
+            <% if(isEditing) { %>
+                Update Product 
+            <% } else { %> 
+                Add Product 
+            <% } %> 
+        </button>
+      </form>
+    </main>
+  </body>
+</html>
