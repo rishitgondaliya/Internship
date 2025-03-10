@@ -1,12 +1,15 @@
 const mongodb = require("mongodb");
 const MongoClient = mongodb.MongoClient; // used to connect to a MongoDB database
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 let _db; // for storing the database connection once it is established
 
 const mongoConnect = (callback) => {
   MongoClient.connect(
     // used to establish a connection to the MongoDB server. // returns a promise
-    "mongodb+srv://rishit_gondaliya:SQF4m5kn0GqumnGt@node-1.wkgcf.mongodb.net/shop?retryWrites=true&w=majority&appName=node-1"
+    process.env.MONGO_DRIVER_URL
   )
     .then((client) => {
       // client => MongoDB client instance. => an object that represents the connection to a MongoDB database server.
