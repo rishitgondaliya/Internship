@@ -10,6 +10,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: "All Products",
         path: "/products",
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch((err) => {
@@ -26,6 +27,7 @@ exports.getProduct = (req, res, next) => {
         product: product,
         pageTitle: product.name,
         path: "/products",
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch((err) => console.log(err));
@@ -39,6 +41,7 @@ exports.getIndex = (req, res) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch((err) => {
@@ -48,7 +51,7 @@ exports.getIndex = (req, res) => {
 
 // get cart page
 exports.getCart = (req, res) => {
-  req.user
+  req.session.user
     .populate("cart.items.productId") // Fetches full product details for each productId in the cart
     .then((user) => {
       const products = user.cart.items; // Extracts cart items from the populated user object
@@ -57,6 +60,7 @@ exports.getCart = (req, res) => {
         pageTitle: "Your Cart",
         path: "/cart",
         products: products,
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch((err) => {
@@ -83,7 +87,7 @@ exports.postCart = (req, res) => {
 // delete a product from cart
 exports.postDeleteCartItem = (req, res) => {
   const prodId = req.body.productId;
-  req.user
+  req.session.user
     .deleteCartItem(prodId)
     .then((result) => {
       console.log("item removed from cart");
@@ -96,13 +100,14 @@ exports.postDeleteCartItem = (req, res) => {
 
 // get orders page
 exports.getOrders = (req, res) => {
-  Order.find({ "user.userId": req.user._id }) //finds orders of current userx
+  Order.find({ "user.userId": req.session.user._id }) //finds orders of current userx
     .then((orders) => {
       // console.log(orders);
       res.render("shop/orders", {
         pageTitle: "Your Orders",
         path: "/orders",
         orders: orders,
+        isAuthenticated: req.isLoggedIn
       });
     })
     .catch((err) => {
@@ -114,7 +119,7 @@ exports.getOrders = (req, res) => {
 exports.postOrder = async (req, res) => {
   try {
     // fetch user cart and populate product details
-    const fetchCart = await req.user
+    const fetchCart = await req.session.user
       .populate("cart.items.productId")
       .then((user) => {
         const products = user.cart.items.map((i) => {
@@ -133,7 +138,7 @@ exports.postOrder = async (req, res) => {
       });
 
     // clear cart
-    await req.user.clearCart();
+    await req.session.user.clearCart();
     console.log("order placed");
     res.redirect("/orders");
   } catch (err) {
