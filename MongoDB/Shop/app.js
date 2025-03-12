@@ -8,10 +8,13 @@ const errorController = require("./controllers/error404");
 const mongoConnect = require("./util/database").mongoConnect;
 const User = require("./models/user");
 
-const app = express();
+const app = express(); // initializes an Express application.
+// express() creates an instance of an Express app, which allows handling HTTP requests, defining routes, and using middleware.
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(bodyParser.urlencoded({ extended: false })); // used to parse form data submitted via POST requests.
+// { extended: false } means it only supports simple key-value pairs (not nested objects).
+
+app.use(express.static(path.join(__dirname, "public"))); // This serves static files (like CSS, JavaScript, images) from the "public" directory.
 
 // ejs
 app.set("view engine", "ejs");
