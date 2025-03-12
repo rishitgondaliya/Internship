@@ -21,15 +21,19 @@
         </ul>
         <ul class="ul">
             <% if (!isAuthenticated) { %>
-            <li class="item">
-                <a href="/login" class="auth-btn <%= path === '/login' ? 'active' : '' %>">Login</a>
-            </li>
-            <% } else{ %>
-            <li class="item">
-                <form action="/logout" method="post">
-                    <button type="submit" class="auth-btn logout-btn <%= path === '/logout' ? 'active' : '' %>">Logout</button>
-                </form>
-            </li>
+              <li class="item">
+                  <a href="/login" class="auth-btn <%= path === '/login' ? 'active' : '' %>">Login</a>
+              </li>
+              <li class="item">
+                <a href="/signup" class="auth-btn <%= path === '/signup' ? 'active' : '' %>">Signup</a>
+              </li>
+            <% } else { %>
+              <li class="item">
+                  <form action="/logout" method="post">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                     <button type="submit" class="auth-btn logout-btn <%= path === '/logout' ? 'active' : '' %>">Logout</button>
+                  </form>
+              </li>
             <% } %>
           </ul>
       </nav>
