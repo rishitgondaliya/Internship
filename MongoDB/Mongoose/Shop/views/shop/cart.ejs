@@ -24,9 +24,11 @@
                           <div class="btn-grp">
                             <button class="btn">Qty : <%= p.quantity %></button>
                             <form action="/products/<%= p.productId._id %>" method="GET">
+                              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                               <button class="btn" type="submit">Details</button>
                             </form>
                             <form action="/delete-cart-item" method="POST">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>"> 
                                 <input type="hidden" name="productId" value="<%= p.productId._id%>">
                                 <button class="btn delete" type="submit">
                                     Remove from cart
@@ -38,6 +40,7 @@
                       <% }) %>
                     </div>
                     <form action="/create-order" method="POST" style="text-align: center; font-size: 2rem">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                       <button class="btn" type="submit" style="font-size: 1.15rem">Order Now !</button>
                     </form>
         <% } else { %>
