@@ -1,6 +1,22 @@
 const Product = require("../models/product");
 const Order = require("../models/order");
 
+
+// get home page
+exports.getIndex = (req, res) => {
+  Product.find()
+  .then((products) => {
+    res.render("shop/index", {
+      prods: products,
+      pageTitle: "Shop",
+      path: "/",
+    });
+  })
+  .catch((err) => {
+    console.log("Error while retriving data from database", err);
+  });
+};
+
 // get-products
 
 exports.getProducts = (req, res, next) => {
@@ -10,7 +26,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: "All Products",
         path: "/products",
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -27,31 +43,15 @@ exports.getProduct = (req, res, next) => {
         product: product,
         pageTitle: product.name,
         path: "/products",
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
 };
 
-// get home page
-exports.getIndex = (req, res) => {
-  Product.find()
-    .then((products) => {
-      res.render("shop/index", {
-        prods: products,
-        pageTitle: "Shop",
-        path: "/",
-        isAuthenticated: req.isLoggedIn
-      });
-    })
-    .catch((err) => {
-      console.log("Error while retriving data from database", err);
-    });
-};
-
 // get cart page
 exports.getCart = (req, res) => {
-  req.session.user
+  req.user
     .populate("cart.items.productId") // Fetches full product details for each productId in the cart
     .then((user) => {
       const products = user.cart.items; // Extracts cart items from the populated user object
@@ -60,7 +60,7 @@ exports.getCart = (req, res) => {
         pageTitle: "Your Cart",
         path: "/cart",
         products: products,
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -87,7 +87,7 @@ exports.postCart = (req, res) => {
 // delete a product from cart
 exports.postDeleteCartItem = (req, res) => {
   const prodId = req.body.productId;
-  req.session.user
+  req.user
     .deleteCartItem(prodId)
     .then((result) => {
       console.log("item removed from cart");
@@ -107,7 +107,7 @@ exports.getOrders = (req, res) => {
         pageTitle: "Your Orders",
         path: "/orders",
         orders: orders,
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -119,7 +119,7 @@ exports.getOrders = (req, res) => {
 exports.postOrder = async (req, res) => {
   try {
     // fetch user cart and populate product details
-    const fetchCart = await req.session.user
+    const fetchCart = await req.user
       .populate("cart.items.productId")
       .then((user) => {
         const products = user.cart.items.map((i) => {
@@ -138,7 +138,7 @@ exports.postOrder = async (req, res) => {
       });
 
     // clear cart
-    await req.session.user.clearCart();
+    await req.user.clearCart();
     console.log("order placed");
     res.redirect("/orders");
   } catch (err) {

@@ -6,6 +6,7 @@ exports.getAddProduct = (req, res) => {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     isEditing: false,
+    // isAuthenticated: req.session.isLoggedIn,
   });
 };
 
@@ -23,7 +24,7 @@ exports.postAddProduct = async (req, res) => {
       userId: req.user._id, // user who created product
     });
 
-    await product.save();  // mongoose provides save() method by default
+    await product.save(); // mongoose provides save() method by default
 
     console.log("Product added successfully:");
     res.redirect("/admin/products");
@@ -44,7 +45,7 @@ exports.getProducts = (req, res) => {
         prods: products,
         pageTitle: "Admin Products",
         path: "/admin/products",
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -71,7 +72,7 @@ exports.getEditProduct = (req, res) => {
         path: "/admin/edit-product",
         isEditing: editMode,
         product: product,
-        isAuthenticated: req.isLoggedIn
+        // isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
