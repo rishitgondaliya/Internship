@@ -36,7 +36,7 @@ exports.postAddProduct = async (req, res) => {
 
 // get list of all products
 exports.getProducts = (req, res) => {
-  Product.find()
+  Product.find({ userId: req.user._id })
     // .select('name price -_id') // selects specific fields / Selects only 'name' and 'price', excluding '_id'
     // .populate('userId name') // Populates 'userId' field with referenced user data
     .then((products) => {
