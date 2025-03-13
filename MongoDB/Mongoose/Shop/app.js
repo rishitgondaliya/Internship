@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require('csurf')
+const flash = require('connect-flash')
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -21,15 +22,17 @@ const store = new MongoDBStore({
   collection: "sessions",
 });
 const csrfProtection = csrf()
+app.use(flash())
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
-    secret: "my secret", // It ensures that the session data is secure and prevents tampering
+    secret: "my secret", // Encrypts the session ID to prevent tampering.
     resave: false, // If true, the session will be saved to the store on every request, even if it wasn't modified. false -> sessions are only saved when they change.
-    saveUninitialized: false, // true, a session will be created even if no data is stored. false -> sessions are only created when something is stored in them,
+    saveUninitialized: false, // true, a session will be created even if no data is stored. false -> Prevents creating empty sessions unless data is stored.
     store: store,
+    cookie: { maxAge: 1000 * 60 * 60  } // session will expire after 1 hour
   })
 );
 app.use(csrfProtection)
