@@ -1,20 +1,20 @@
 const Product = require("../models/product");
 const Order = require("../models/order");
 
-
 // get home page
 exports.getIndex = (req, res) => {
   Product.find()
-  .then((products) => {
-    res.render("shop/index", {
-      prods: products,
-      pageTitle: "Shop",
-      path: "/",
+    .limit(3)
+    .then((products) => {
+      res.render("shop/index", {
+        prods: products,
+        pageTitle: "Shop",
+        path: "/",
+      });
+    })
+    .catch((err) => {
+      console.log("Error while retriving data from database", err);
     });
-  })
-  .catch((err) => {
-    console.log("Error while retriving data from database", err);
-  });
 };
 
 // get-products
