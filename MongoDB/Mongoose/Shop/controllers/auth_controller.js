@@ -1,5 +1,23 @@
-const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const sendgrid = require("nodemailer-sendgrid-transport");
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+const crypto = require("crypto");
+const sgMail = require("@sendgrid/mail");
+
+const User = require("../models/user");
+
+dotenv.config();
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// const transporter = nodemailer.createTransport(
+//   sendgrid({
+//     auth: {
+//       // api_user: 'apikey',
+//       api_key: process.env.SENDGRID_API_KEY,
+//     },
+//   })
+// );
 
 exports.getSignup = (req, res) => {
   let message = req.flash("error")[0] || null;
@@ -69,6 +87,17 @@ exports.postSignup = (req, res) => {
         })
         .then((result) => {
           res.redirect("/login");
+          const msg = {
+            from: "myshop.mail.from@gmail.com",
+            to: email,
+            subject: "Sign up succeeded",
+            html: "<h1>Welcome to our website</h1><p>Thank you for joining<p>",
+          };
+
+          return sgMail.send(msg);
+        })
+        .catch((err) => {
+          console.log(err);
         });
     })
     .catch((err) => console.log(err));
@@ -140,4 +169,128 @@ exports.postLogout = (req, res) => {
     // req.flash("success", "Logout successful! See you again.");
     res.redirect("/login");
   });
+};
+
+exports.getResetPassword = (req, res) => {
+  let message = req.flash("error")[0] || null;
+  res.render("auth/reset", {
+    errorMsg: message,
+    path: "/reset",
+    pageTitle: "Reset Password",
+    oldInput: {},
+  });
+};
+
+exports.postResetPassword = (req, res) => {
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log("Error generating token:", err);
+      return res.redirect("/reset");
+    }
+
+    const token = buffer.toString("hex");
+    const email = req.body.email;
+
+    User.findOne({ email: email })
+      .then((user) => {
+        if (!user) {
+          req.flash("error", "User not found!");
+          return res.redirect("/reset");
+        }
+
+        // Save token and expiration in user model
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 30 * 60 * 1000; // Token valid for 30 minutes
+
+        return user.save(); // Make sure to return this
+      })
+      .then((updatedUser) => {
+        if (!updatedUser) {
+          throw new Error("Token not saved in database");
+        }
+
+        const resetUrl = `http://localhost:3000/reset/${token}`;
+        const msg = {
+          to: email,
+          from: "myshop.mail.from@gmail.com",
+          subject: "Password Reset",
+          text: "Click the link below to reset your password.",
+          html: `Click <a href="${resetUrl}">here</a> to reset your password.`,
+        };
+
+        return sgMail.send(msg);
+      })
+      .then(() => {
+        req.flash(
+          "success",
+          "Password reset link has been sent to your email."
+        );
+        res.redirect("/login");
+      })
+      .catch((err) => {
+        console.error("Error in postResetPassword:", err);
+        req.flash("error", "Something went wrong. Please try again.");
+        res.redirect("/reset");
+      });
+  });
+};
+
+exports.getNewPassword = (req, res) => {
+  const token = req.params.token;
+  User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() },
+  })
+    .then((user) => {
+      if (!user) {
+        req.flash("error", "Invalid or expired token.");
+        return res.redirect("/reset");
+      }
+
+      let message = req.flash("error")[0] || null;
+      let successMsg = req.flash("success")[0] || null;
+      res.render("auth/new-password", {
+        path: "/new-password",
+        pageTitle: "New Password",
+        errorMsg: message,
+        successMsg: successMsg,
+        userId: user._id.toString(),
+        passwordToken: token,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      req.flash("error", "Something went wrong. Please try again.");
+      res.redirect("/reset");
+    });
+};
+
+exports.postNewPassword = (req, res) => {
+  const newPassword = req.body.newPassword;
+  const userId = req.body.userId;
+  const passwordToken = req.body.passwordToken;
+  let resetUser;
+
+  User.findOne({
+    resetPasswordToken: passwordToken,
+    resetPasswordExpires: { $gt: Date.now() },
+    _id: userId,
+  })
+    .then((user) => {
+      resetUser = user;
+      return bcrypt.hash(newPassword, 12);
+    })
+    .then((hashedPassword) => {
+      resetUser.password = hashedPassword;
+      resetUser.resetPasswordToken = null;
+      resetUser.resetPasswordExpires = undefined;
+      return resetUser.save();
+    })
+    .then((result) => {
+      req.flash("success", "Password has been changed successfully.");
+      res.redirect("/login");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
