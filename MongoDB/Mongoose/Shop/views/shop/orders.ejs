@@ -21,7 +21,7 @@
                                         <img src="<%= p.product.imgUrl %>" alt="<%= p.product.name %>">
                                     </div>
                                     <div class="order-product-details">
-                                        <p class="order-product-price">Rs. <%= p.product.price %>/-</p>
+                                        <p class="order-product-price">Rs. <%= p.product.price.toLocaleString('en-IN') %>/-</p>
                                         <p class="order-product-quantity">Qty: <%= p.quantity || 0 %></p>
                                     </div>
                                 </article>

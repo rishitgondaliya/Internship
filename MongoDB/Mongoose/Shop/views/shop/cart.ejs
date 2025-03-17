@@ -17,7 +17,7 @@
                           />
                         </div>
                         <div class="card-content">
-                          <h2 class="product-price">Rs. <%= p.productId.price %>/-</h2>
+                          <h2 class="product-price">Rs. <%= p.productId.price.toLocaleString('en-IN') %>/-</h2>
                           <p class="product-desc"><%= p.productId.desc %></p>
                         </div>
                         <div class="card-action">

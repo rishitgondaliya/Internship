@@ -7,15 +7,13 @@
         </div>
         <div class="detail">
             <h1><%= product.name  %></h1>
-            <h2><%= product.price  %>/-</h2>
+            <h2><%= product.price.toLocaleString('en-IN')  %>/-</h2>
             <p><%= product.desc  %></p>
-            <% if (isAuthenticated){ %>
-                <form action="/cart" method="POST">
-                  <button class="btn" type="submit">Add to Cart</button>
-                  <input type="hidden" name="productId" value="<%= product._id %>">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                </form>
-            <% } %>
+            <form action="/cart" method="POST">
+                <button class="btn" type="submit">Add to Cart</button>
+                <input type="hidden" name="productId" value="<%= product._id %>">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            </form>            
         </div>
     </main>
 </body>

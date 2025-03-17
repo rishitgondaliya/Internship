@@ -15,7 +15,7 @@
             />
           </div>
           <div class="card-content">
-            <h2 class="product-price">Rs. <%= product.price %>/-</h2>
+            <h2 class="product-price">Rs. <%= product.price.toLocaleString('en-IN') %>/-</h2>
             <p class="product-desc"><%= product.desc %></p>
           </div>
           <div class="card-action">
@@ -29,6 +29,11 @@
           </div>
         </article>
         <% } %>
+      </div>
+      <div style="text-align: center;">
+        <a href="/products">
+          <button class="btn" style="margin: 3rem; font-size: 1.1rem;">Explore all products...</button>
+        </a>
       </div>
       <% } else { %>
       <!-- If there are no products -->
