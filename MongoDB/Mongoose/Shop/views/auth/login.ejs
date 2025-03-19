@@ -1,6 +1,6 @@
 <%- include('../includes/main.ejs') %>
     <main>
-      <form action="/login" method="POST" class="form-control">
+      <form action="/login" method="POST" class="form-control" novalidate>
         <div class="login-form">
             <h2 style="text-align: center;">Login</h2>
             <% if(errorMsg) { %>
@@ -9,13 +9,26 @@
               </div>
             <% } %>
             <div class="inner-grp2">
-                <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" value="<%= oldInput.email || '' %>"/>
-            </div>
-            <div class="inner-grp2">
-                <label for="pass">Password:</label>
-                <input type="password" id="pass" name="password">
-            </div>
+              <label for="email">E-mail:</label>
+              <input 
+                class="<%= validationResult.find(e => e.path === 'email') ? 'invalid' : '' %>" 
+                type="email" 
+                id="email" 
+                name="email" 
+                placeholder="enter your email here"
+                value="<%= oldInput.email || '' %>" 
+              />
+          </div>
+          <div class="inner-grp2">
+              <label for="pass">Password:</label>
+              <input 
+                class="<%= validationResult.find(e => e.path === 'password') ? 'invalid' : '' %>" 
+                type="password" 
+                id="pass" 
+                name="password" 
+                value="<%= oldInput.password || '' %>" 
+              >
+          </div>
           </div>
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button class="btn login" type="submit">Login</button>

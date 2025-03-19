@@ -1,6 +1,6 @@
 <%- include('../includes/main.ejs') %>
     <main>
-      <form action="/signup" method="POST" class="form-control">
+      <form action="/signup" method="POST" class="form-control" novalidate>
         <div class="login-form">
             <h2 style="text-align: center;">Sign Up</h2>
             <% if(errorMsg) { %>
@@ -10,15 +10,36 @@
             <% } %>
             <div class="inner-grp2">
               <label for="name">Name:</label>
-              <input type="text" id="name" name="name" value="<%= oldInput.name || '' %>"/>
+              <input 
+                class="<%= validationResult.find(e => e.path === 'name') ? 'invalid' : '' %>" 
+                type="text" 
+                id="name" 
+                name="name" 
+                placeholder="Tony stark"
+                value="<%= oldInput.name || '' %>" 
+              />
             </div>
             <div class="inner-grp2">
                 <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" value="<%= oldInput.email || '' %>"/>
+                <input 
+                  class="<%= validationResult.find(e => e.path === 'email') ? 'invalid' : '' %>" 
+                  type="email" 
+                  id="email" 
+                  name="email" 
+                  placeholder="test@gmail.com"
+                  value="<%= oldInput.email || '' %>" 
+                />
             </div>
             <div class="inner-grp2">
                 <label for="pass">Password:</label>
-                <input type="password" id="pass" name="password">
+                <input 
+                  class="<%= validationResult.find(e => e.path === 'password') ? 'invalid' : '' %>" 
+                  type="password" 
+                  id="pass" 
+                  name="password" 
+                  placeholder="create a strong password"
+                  value="<%= oldInput.password || '' %>" 
+                >
             </div>
         </div>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">

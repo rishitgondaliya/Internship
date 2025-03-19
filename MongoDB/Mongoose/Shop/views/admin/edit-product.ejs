@@ -6,22 +6,48 @@
         class="form-control"
     >
         <div class="input-group">
+          <% if(errorMsg) { %>
+            <div class="flash-error" style="margin: 0.5rem auto 1.5rem; font-size:large">
+              <%= errorMsg %>
+            </div>
+          <% } %>
           <div class="inner-grp">
             <div class="name">
               <label for="name">Name:</label>
-            <input type="text" id="name" name="updatedName" value="<%= isEditing ? product.name : '' %>"/>
+              <input
+                class="<%= validationResult.find(e => e.path === 'updatedName') ? 'invalid' : '' %>"  
+                type="text" 
+                id="name" 
+                name="updatedName" 
+                value="<%= (isEditing) ? product.name : '' %>"
+              />
             </div>
             <div class="price">
               <label for="price">Price:</label>
-            <input type="number" id="price" name="updatedPrice" value="<%= isEditing ? product.price.toLocaleString('en-IN') : '' %>"/>
+              <input 
+                class="<%= validationResult.find(e => e.path === 'updatedPrice') ? 'invalid' : '' %>" 
+                type="number" 
+                id="price" 
+                name="updatedPrice" 
+                value="<%= (isEditing) ? product.price : '' %>"
+              />
             </div>
           </div>
           <div class="inner-grp2">
             <label for="imgUrl">Image URL:</label>
-            <input type="text" id="imgUrl" name="updatedImgUrl" value="<%= isEditing ? product.imgUrl : '' %>">
+            <input 
+              class="<%= validationResult.find(e => e.path === 'updatedImgUrl') ? 'invalid' : '' %>" 
+              type="text" 
+              id="imgUrl" 
+              name="updatedImgUrl" 
+              value="<%= (isEditing) ? product.imgUrl : '' %>"
+            >
             <img src="<%= isEditing ? product.imgUrl : '' %>" alt="No preview available">
             <label for="desc">Description:</label>
-            <textarea id="desc" name="updatedDesc"><%= isEditing ? product.desc : '' %></textarea>
+            <textarea 
+            class="<%= validationResult.find(e => e.path === 'updatedDesc') ? 'invalid' : '' %>" 
+            id="desc" 
+            name="updatedDesc"><%= (isEditing) ? product.desc : '' %></textarea>
           </div>
         </div>
         <% if(isEditing){ %>

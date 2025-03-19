@@ -21,26 +21,25 @@ router.post(
         }
         return true;
       }),
-
     check("email")
       .trim()
       .notEmpty()
       .withMessage("Email is required.")
       .isEmail()
       .withMessage("Please enter a valid email address!")
-      .custom((value) => {
-        return User.findOne({ email: value }).then((userDoc) => {
-          if (userDoc) {
-            return Promise.reject(
-              "Email already exists! Please use a different email."
-            );
-          }
-        });
-      }),
-
+      .custom(async (value, { req }) => {
+        const user = await User.findOne({ email: value });
+        if (user) {
+          return Promise.reject(
+            "Email already exists! Please use a different email."
+          );
+        }
+      })
+      .normalizeEmail(),
     check("password")
-      .isLength({ min: 8 })
-      .withMessage("Password must be at least 8 characters long.")
+      .trim()
+      .isLength({ min: 8, max: 16 })
+      .withMessage("Password must be between 8 and 16 characters long.")
       .isAlphanumeric()
       .withMessage("Password must contain only letters and numbers.")
       .custom((value, { req }) => {
@@ -61,7 +60,7 @@ router.post(
     check("email")
       .trim()
       .notEmpty()
-      .withMessage("Please enter email!")
+      .withMessage("Please enter a email!")
       .isEmail()
       .withMessage("Please enter a valid email!")
       .custom(async (value, { req }) => {
@@ -71,9 +70,9 @@ router.post(
           return Promise.reject("User not found!");
         }
         return true;
-      }),
-
-    check("password").trim().notEmpty().withMessage("Please enter password!"),
+      })
+      .normalizeEmail(),
+    check("password").trim().notEmpty().withMessage("Please enter a password!"),
   ],
   authController.postLogin
 );
