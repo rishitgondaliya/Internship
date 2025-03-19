@@ -1,4 +1,6 @@
+const { default: mongoose } = require("mongoose");
 const Product = require("../models/product");
+const { validationResult } = require("express-validator");
 
 // get add product page
 exports.getAddProduct = (req, res) => {
@@ -6,15 +8,29 @@ exports.getAddProduct = (req, res) => {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     isEditing: false,
-    // isAuthenticated: req.session.isLoggedIn,
+    oldInput: {},
+    errorMsg: null,
+    validationResult: [],
   });
 };
 
 // post product data
 
-exports.postAddProduct = async (req, res) => {
+exports.postAddProduct = async (req, res, next) => {
+  const errors = validationResult(req);
+  const { name, price, imgUrl, desc } = req.body;
   try {
-    const { name, price, imgUrl, desc } = req.body;
+    if (!errors.isEmpty()) {
+      // console.log("errors", errors.array())
+      return res.status(422).render("admin/add-product", {
+        pageTitle: "Add Product",
+        path: "/admin/add-product",
+        isEditing: false,
+        oldInput: { name, price, imgUrl, desc },
+        errorMsg: errors.array()[0].msg,
+        validationResult: errors.array(),
+      });
+    }
 
     const product = new Product({
       name: name,
@@ -29,8 +45,19 @@ exports.postAddProduct = async (req, res) => {
     console.log("Product added successfully:");
     res.redirect("/admin/products");
   } catch (err) {
-    console.error("An error occurred while adding product:", err);
-    res.status(500).send("Internal Server Error");
+    // return res.status(500).render("admin/add-product", {
+    //   pageTitle: "Add Product",
+    //   path: "/admin/add-product",
+    //   isEditing: false,
+    //   oldInput: { name, price, imgUrl, desc },
+    //   errorMsg: "Error while adding product, please try again.!",
+    //   validationResult: [],
+    // });
+
+    // res.redirect('/500')
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -49,7 +76,11 @@ exports.getProducts = (req, res) => {
       });
     })
     .catch((err) => {
-      console.log("Error while retriving data from database", err);
+      const error = new Error(
+        "Error while retriving products data from database"
+      );
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -67,25 +98,46 @@ exports.getEditProduct = (req, res) => {
       if (!product) {
         return res.redirect("/");
       }
-      res.render("admin/edit-product", {
+      res.status(422).render("admin/edit-product", {
         pageTitle: "Edit Product",
         path: "/admin/edit-product",
         isEditing: editMode,
         product: product,
-        // isAuthenticated: req.session.isLoggedIn,
+        errorMsg: null,
+        validationResult: [],
       });
     })
     .catch((err) => {
-      console.log("Error while editing product", err);
+      const error = new Error("Error editing the product.!");
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
 // update product and post updated data
 exports.postEditProduct = async (req, res) => {
+  const errors = validationResult(req);
   try {
     const prodId = req.body.productId;
     const { updatedName, updatedPrice, updatedImgUrl, updatedDesc } = req.body;
 
+    if (!errors.isEmpty()) {
+      console.log("errors", errors.array());
+      return res.status(422).render("admin/edit-product", {
+        pageTitle: "Edit Product",
+        path: "/admin/edit-product",
+        isEditing: true,
+        product: {
+          name: updatedName,
+          price: updatedPrice,
+          imgUrl: updatedImgUrl,
+          desc: updatedDesc,
+          _id: prodId,
+        },
+        errorMsg: errors.array()[0].msg,
+        validationResult: errors.array(),
+      });
+    }
     const updatedProduct = await Product.findByIdAndUpdate(
       prodId,
       {
@@ -105,7 +157,9 @@ exports.postEditProduct = async (req, res) => {
     console.log("Product details updated successfully.");
     res.redirect("/admin/products");
   } catch (err) {
-    console.log("Error while updating product details", err);
+    const error = new Error("Error while updating the product details");
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -130,7 +184,9 @@ exports.postDeleteProduct = (req, res) => {
         res.redirect("/admin/products");
       })
       .catch((err) => {
-        console.log("Eroor while deleting the product", err);
+        const error = new Error("Error while deleting the product");
+        error.httpStatusCode = 500;
+        return next(error);
       });
   } else {
     // If product is not in the cart, directly delete it from the database
@@ -141,7 +197,9 @@ exports.postDeleteProduct = (req, res) => {
         res.redirect("/admin/products");
       })
       .catch((err) => {
-        console.log("Eroor while deleting the product", err);
+        const error = new Error("Error while deleting the product");
+        error.httpStatusCode = 500;
+        return next(error);
       });
   }
 };

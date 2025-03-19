@@ -5,8 +5,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
-const csrf = require('csurf')
-const flash = require('connect-flash')
+const csrf = require("csurf");
+const flash = require("connect-flash");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -21,8 +21,8 @@ const store = new MongoDBStore({
   uri: process.env.MONGO_DRIVER_URL,
   collection: "sessions",
 });
-const csrfProtection = csrf()
-app.use(flash())
+const csrfProtection = csrf();
+app.use(flash());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -32,10 +32,10 @@ app.use(
     resave: false, // If true, the session will be saved to the store on every request, even if it wasn't modified. false -> sessions are only saved when they change.
     saveUninitialized: false, // true, a session will be created even if no data is stored. false -> Prevents creating empty sessions unless data is stored.
     store: store,
-    cookie: { maxAge: 1000 * 60 * 60  } // session will expire after 1 hour
+    cookie: { maxAge: 1000 * 60 * 60 }, // session will expire after 1 hour
   })
 );
-app.use(csrfProtection)
+app.use(csrfProtection);
 
 // ejs
 app.set("view engine", "ejs");
@@ -59,11 +59,14 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
     .then((user) => {
+      if (!user) {
+        return next();
+      }
       req.user = user;
       next();
     })
     .catch((err) => {
-      console.log(err);
+      next(new Error(err));
     });
 });
 
@@ -71,13 +74,17 @@ app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
   next();
-})
+});
 
 app.use(adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.get('/500', errorController.get500)
 app.use(errorController.getError);
+app.use((error, req, res, next) => {
+  res.redirect('/500')
+})
 
 mongoose
   .connect(process.env.MONGO_DRIVER_URL)
@@ -88,7 +95,7 @@ mongoose
     // User.findOne().then((user) => {
     //   if (!user) {
     //     const user = new User({
-    //       name: "Rishit", 
+    //       name: "Rishit",
     //       email: "r@test.com",
     //       cart: {
     //         items: [],

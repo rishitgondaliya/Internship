@@ -13,7 +13,9 @@ exports.getIndex = (req, res) => {
       });
     })
     .catch((err) => {
-      console.log("Error while retriving data from database", err);
+      const error = new Error("Error while retriving data from the database");
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -30,7 +32,9 @@ exports.getProducts = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log("Error while retriving products from database", err);
+      const error = new Error("Error while retriving data from the database");
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -46,7 +50,11 @@ exports.getProduct = (req, res, next) => {
         // isAuthenticated: req.session.isLoggedIn,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 // get cart page
@@ -64,7 +72,9 @@ exports.getCart = (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -80,7 +90,9 @@ exports.postCart = (req, res) => {
       res.redirect("/cart");
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -94,7 +106,9 @@ exports.postDeleteCartItem = (req, res) => {
       res.redirect("/cart");
     })
     .catch((err) => {
-      console.log("error while fetching cart", err);
+      const error = new Error("Error while fetchin the cart");
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -111,7 +125,9 @@ exports.getOrders = (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -142,7 +158,8 @@ exports.postOrder = async (req, res) => {
     console.log("order placed");
     res.redirect("/orders");
   } catch (err) {
-    console.error("Error while creating order:", err);
-    res.status(500).send("Something went wrong!");
+    const error = new Error("Error while creating order");
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };

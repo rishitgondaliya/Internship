@@ -31,21 +31,20 @@ exports.getSignup = (req, res) => {
     errorMsg: message,
     oldInput: formData,
     validationResult: [],
-    // isAuthenticated: false,
   });
 };
 
 exports.postSignup = (req, res) => {
+  const { name, email, password } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    // req.flash("error", "Invalid inputs!");
     const formData = { name, email, password };
-    // return res.redirect("/signup");
     return res.status(422).render("auth/signup", {
       path: "/signup",
       pageTitle: "Sign Up",
       errorMsg: errors.array()[0].msg,
       oldInput: formData,
+      validationResult: errors.array(),
     });
   }
   bcrypt
@@ -71,7 +70,9 @@ exports.postSignup = (req, res) => {
       return sgMail.send(msg);
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -91,25 +92,49 @@ exports.getLogin = (req, res) => {
     errorMsg: message,
     // successMsg: successMsg,
     oldInput: formData,
+    validationResult: [],
   });
 };
 
 exports.postLogin = (req, res) => {
-  //   req.isLoggedIn = true;
-  //   res.setHeader("Set-Cookie", "isLoggedIn = true; httpOnly"); // set cookie
+  // req.isLoggedIn = true;
+  // res.setHeader("Set-Cookie", "isLoggedIn = true; httpOnly"); // set cookie
   // User.findById("67ca9bbf2d0bf9ca7b9d58e2")
   const { email, password } = req.body;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = errors.array()[0].msg;
+    req.flash("error", error.msg);
+    return res.status(422).render("auth/login", {
+      path: "/login",
+      pageTitle: "Login",
+      errorMsg: error,
+      oldInput: { email, password },
+      validationResult: errors.array(),
+    });
+  }
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
-        req.flash("error", "User not found!");
-        return req.session.save(() => res.redirect("/login"));
+        return res.status(422).render("auth/login", {
+          path: "/login",
+          pageTitle: "Login",
+          errorMsg: "User not found",
+          oldInput: { email, password },
+          validationResult: errors.array(),
+        });
       }
       bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          req.flash("error", "Incorrect password !!");
           req.session.formData = { email, password };
-          return req.session.save(() => res.redirect("/login"));
+          return res.status(422).render("auth/login", {
+            path: "/login",
+            pageTitle: "Login",
+            errorMsg: "Incorrect password !!",
+            oldInput: { email, password },
+            validationResult: [{ path: "password" }],
+          });
         }
         req.session.isLoggedIn = true;
         req.session.user = user;
@@ -120,7 +145,9 @@ exports.postLogin = (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -252,6 +279,8 @@ exports.postNewPassword = (req, res) => {
       res.redirect("/login");
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
