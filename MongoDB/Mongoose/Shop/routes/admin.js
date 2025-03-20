@@ -18,8 +18,7 @@ router.post(
       .withMessage("Product name is required.")
       .isLength({ min: 2 })
       .withMessage("Product name must be at least 2 characters long.")
-      .isAlphanumeric()
-      .withMessage("Product name can only contain letters and numbers."),
+      .isString(),
 
     check("price")
       .notEmpty()
@@ -33,16 +32,13 @@ router.post(
       .withMessage("Description is required.")
       .isLength({ min: 5, max: 120 })
       .withMessage("Description must be between 5 and 120 characters long.")
-      .matches(/^[a-zA-Z0-9\s.,'-]+$/)
-      .withMessage(
-        "Description can only contain letters, numbers, spaces, and basic punctuation."
-      ),
+      .isString()
 
-    check("imgUrl")
-      .notEmpty()
-      .withMessage("Image URL is required.")
-      .isURL()
-      .withMessage("Please enter a valid image URL."),
+    // check("imgUrl")
+    //   .notEmpty()
+    //   .withMessage("Image URL is required.")
+    //   .isURL()
+    //   .withMessage("Please enter a valid image URL."),
   ],
   isAuth,
   adminController.postAddProduct
@@ -65,8 +61,7 @@ router.post(
       .withMessage("Product name is required.")
       .isLength({ min: 2 })
       .withMessage("Product name must be at least 2 characters long.")
-      .isAlphanumeric()
-      .withMessage("Product name can only contain letters and numbers."),
+      .isString(),
 
     check("updatedPrice")
       .notEmpty()
@@ -80,16 +75,13 @@ router.post(
       .withMessage("Description is required.")
       .isLength({ min: 5, max: 120 })
       .withMessage("Description must be between 5 and 120 characters long.")
-      .matches(/^[a-zA-Z0-9\s.,'-]+$/)
-      .withMessage(
-        "Description can only contain letters, numbers, spaces, and basic punctuation."
-      ),
+      .isString( ),
 
-    check("updatedImgUrl")
-      .notEmpty()
-      .withMessage("Image URL is required.")
-      .isURL()
-      .withMessage("Please enter a valid image URL."),
+    // check("updatedImgUrl")
+    //   .notEmpty()
+    //   .withMessage("Image URL is required.")
+    //   .isURL()
+    //   .withMessage("Please enter a valid image URL."),
   ],
   isAuth,
   adminController.postEditProduct
