@@ -21,4 +21,6 @@ app.get('/orders', isAuth, shopController.getOrders)
 
 app.post('/create-order', isAuth, shopController.postOrder)
 
+app.get('/orders/:orderId', isAuth, shopController.getInvoice);
+
 module.exports = app;

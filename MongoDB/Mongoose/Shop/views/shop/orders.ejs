@@ -10,6 +10,7 @@
                     <div class="order-card">
                         <header class="order-header">
                             <h2>Order - #<%= order._id %></h2>
+                            <a href="/orders/<%= order._id %>">Download innvoice</a>
                         </header>
                         <div class="order-items">
                             <% order.products.forEach(p => { %>
