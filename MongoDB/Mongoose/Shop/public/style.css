@@ -363,6 +363,10 @@ main h1 {
   width: max-content;
 }
 
+.order-header {
+  margin-bottom: 1rem;
+}
+
 .order-header h2 {
   font-size: 1.3rem;
   font-weight: bold;
@@ -471,4 +475,9 @@ main h1 {
   color: white;
   font-weight: 600;
   background-color: #f78b8b;
+}
+
+.file-input {
+  background-color: white;
+  padding-top: 0.5rem;
 }
