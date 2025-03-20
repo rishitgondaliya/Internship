@@ -1,6 +1,6 @@
 <%- include('../includes/main.ejs') %>
     <main>
-      <form action="/admin/add-product" method="POST" class="form-control" novalidate>
+      <form action="/admin/add-product" method="POST" class="form-control" novalidate enctype="multipart/form-data">
         <div class="input-group">
           <% if(errorMsg) { %>
             <div class="flash-error" style="margin: 0.5rem 0.5rem 1.5rem; font-size:large">
@@ -29,15 +29,24 @@
             />
             </div>
           </div>
-          <div class="inner-grp2">
-            <label for="imgUrl">Image URL:</label>
+          <div class="inner-grp2 file-upload-container">
+            <!-- <label for="imgUrl">Image URL:</label>
             <input 
-            class="<%= validationResult.find(e => e.path === 'imgUrl') ? 'invalid' : '' %>" 
-            type="text" 
-            id="imgUrl" 
-            name="imgUrl" 
-            value="<%= oldInput.imgUrl %>"
+              class="<%= validationResult.find(e => e.path === 'imgUrl') ? 'invalid' : '' %>" 
+              type="text" 
+              id="imgUrl" 
+              name="imgUrl" 
+              value="<%= oldInput.imgUrl %>"
+            > -->
+            <label for="imgUrl" class="file-label">Image:</label>
+            <input 
+              class="file-input <%= validationResult.find(e => e.path === 'imgUrl') ? 'invalid' : '' %>""
+              type="file" 
+              id="imgUrl" 
+              name="imgUrl" 
             >
+          </div>
+          <div class="inner-grp2">
             <label for="desc">Description:</label>
             <textarea 
               class="<%= validationResult.find(e => e.path === 'desc') ? 'invalid' : '' %>" 

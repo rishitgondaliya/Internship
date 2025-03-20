@@ -4,7 +4,8 @@
         action="/admin/<%= isEditing ? 'edit-product' : 'add-product' %>" 
         method="POST" 
         class="form-control"
-    >
+        enctype="multipart/form-data"
+      >
         <div class="input-group">
           <% if(errorMsg) { %>
             <div class="flash-error" style="margin: 0.5rem auto 1.5rem; font-size:large">
@@ -34,15 +35,22 @@
             </div>
           </div>
           <div class="inner-grp2">
-            <label for="imgUrl">Image URL:</label>
+            <!-- <label for="imgUrl">Image URL:</label>
             <input 
               class="<%= validationResult.find(e => e.path === 'updatedImgUrl') ? 'invalid' : '' %>" 
               type="text" 
               id="imgUrl" 
               name="updatedImgUrl" 
               value="<%= (isEditing) ? product.imgUrl : '' %>"
+            > -->
+            <label for="imgUrl" class="file-label">Image:</label>
+            <input 
+              class="file-input <%= validationResult.find(e => e.path === 'imgUrl') ? 'invalid' : '' %>""
+              type="file" 
+              id="imgUrl" 
+              name="imgUrl" 
             >
-            <img src="<%= isEditing ? product.imgUrl : '' %>" alt="No preview available">
+            <img src="/<%= isEditing ? product.imgUrl : '' %>" alt="No preview available">
             <label for="desc">Description:</label>
             <textarea 
             class="<%= validationResult.find(e => e.path === 'updatedDesc') ? 'invalid' : '' %>" 

@@ -7,6 +7,7 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
+const multer = require('multer')
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -24,8 +25,27 @@ const store = new MongoDBStore({
 const csrfProtection = csrf();
 app.use(flash());
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "product-images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+})
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
+    cb(null, true)
+  } else {
+    cb(null, false)
+  }
+}
+
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('imgUrl'))
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/product-images", express.static(path.join(__dirname, "product-images")));
 app.use(
   session({
     secret: "my secret", // Encrypts the session ID to prevent tampering.

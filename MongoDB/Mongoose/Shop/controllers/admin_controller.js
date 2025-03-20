@@ -18,7 +18,21 @@ exports.getAddProduct = (req, res) => {
 
 exports.postAddProduct = async (req, res, next) => {
   const errors = validationResult(req);
-  const { name, price, imgUrl, desc } = req.body;
+  const { name, price, desc } = req.body;
+  const imgUrl = req.file;
+  console.log(imgUrl);
+
+  if (!imgUrl) {
+    return res.status(422).render("admin/add-product", {
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      isEditing: false,
+      oldInput: { name, price, desc },
+      errorMsg:
+        "File type not supported! Please upload only .jpg/.png/.jpeg file.",
+      validationResult: [{ path: "imgUrl" }],
+    });
+  }
   try {
     if (!errors.isEmpty()) {
       // console.log("errors", errors.array())
@@ -26,16 +40,18 @@ exports.postAddProduct = async (req, res, next) => {
         pageTitle: "Add Product",
         path: "/admin/add-product",
         isEditing: false,
-        oldInput: { name, price, imgUrl, desc },
+        oldInput: { name, price, desc },
         errorMsg: errors.array()[0].msg,
         validationResult: errors.array(),
       });
     }
 
+    const image = imgUrl.path;
+
     const product = new Product({
       name: name,
       price: price,
-      imgUrl: imgUrl,
+      imgUrl: image,
       desc: desc,
       userId: req.user._id, // user who created product
     });
@@ -138,14 +154,20 @@ exports.postEditProduct = async (req, res) => {
         validationResult: errors.array(),
       });
     }
+    
+    const updatedFields = {
+      name: updatedName,
+      price: updatedPrice,
+      desc: updatedDesc
+    }
+
+    if(req.file) {
+      updatedFields.imgUrl = req.file.path;
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(
       prodId,
-      {
-        name: updatedName,
-        price: updatedPrice,
-        imgUrl: updatedImgUrl,
-        desc: updatedDesc,
-      },
+      updatedFields,
       { new: true, runValidators: true }
     );
 
