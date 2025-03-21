@@ -18,6 +18,6 @@ logs/
 # Ignore package-lock.json (optional)
 package-lock.json
 
-data/
+data
 
 uploads/
