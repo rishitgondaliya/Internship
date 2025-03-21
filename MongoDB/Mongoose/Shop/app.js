@@ -7,7 +7,7 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
-const multer = require('multer')
+const multer = require("multer");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -27,25 +27,35 @@ app.use(flash());
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "product-images");
+    cb(null, "uploads");
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  }
-})
+    const fileName = `${Date.now()}-${file.originalname}`;
+    cb(null, fileName);
+  },
+});
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
-    cb(null, true)
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
   } else {
-    cb(null, false)
+    cb(null, false);
   }
-}
+};
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('imgUrl'))
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("imgUrl")
+);
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/product-images", express.static(path.join(__dirname, "product-images")));
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 app.use(
   session({
     secret: "my secret", // Encrypts the session ID to prevent tampering.
@@ -100,11 +110,11 @@ app.use(adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
-app.get('/500', errorController.get500)
+app.get("/500", errorController.get500);
 app.use(errorController.getError);
 app.use((error, req, res, next) => {
-  res.redirect('/500')
-})
+  res.redirect("/500");
+});
 
 mongoose
   .connect(process.env.MONGO_DRIVER_URL)
