@@ -1,6 +1,6 @@
-const { default: mongoose } = require("mongoose");
 const Product = require("../models/product");
 const { validationResult } = require("express-validator");
+const file = require("../util/file");
 
 // get add product page
 exports.getAddProduct = (req, res) => {
@@ -79,19 +79,45 @@ exports.postAddProduct = async (req, res, next) => {
 
 // get list of all products
 exports.getProducts = (req, res) => {
-  Product.find({ userId: req.user._id })
-    // .select('name price -_id') // selects specific fields / Selects only 'name' and 'price', excluding '_id'
-    // .populate('userId name') // Populates 'userId' field with referenced user data
+  const page = req.query.page || 1;
+  const itemsPerPage = 3;
+  let totalProducts;
+
+  Product.countDocuments({ userId: req.user._id }) // Corrected this line
+    .then((productCount) => {
+      totalProducts = productCount;
+      return Product.find({ userId: req.user._id })
+        .skip((page - 1) * itemsPerPage)
+        .limit(itemsPerPage);
+    })
     .then((products) => {
-      // console.log(products)
       res.render("admin/products", {
         prods: products,
         pageTitle: "Admin Products",
         path: "/admin/products",
-        // isAuthenticated: req.session.isLoggedIn,
+        currentPage: page,
+        hasNextPage: page * itemsPerPage < totalProducts,
+        hasPrevPage: page > 1,
+        nextPage: page + 1,
+        prevPage: page - 1,
+        lastPage: Math.ceil(totalProducts / itemsPerPage),
       });
     })
+
+    // Product.find({ userId: req.user._id })
+    //   // .select('name price -_id') // selects specific fields / Selects only 'name' and 'price', excluding '_id'
+    //   // .populate('userId name') // Populates 'userId' field with referenced user data
+    //   .then((products) => {
+    //     // console.log(products)
+    //     res.render("admin/products", {
+    //       prods: products,
+    //       pageTitle: "Admin Products",
+    //       path: "/admin/products",
+    //       // isAuthenticated: req.session.isLoggedIn,
+    //     });
+    //   })
     .catch((err) => {
+      console.log(err);
       const error = new Error(
         "Error while retriving products data from database"
       );
@@ -131,7 +157,7 @@ exports.getEditProduct = (req, res) => {
 };
 
 // update product and post updated data
-exports.postEditProduct = async (req, res) => {
+exports.postEditProduct = async (req, res, next) => {
   const errors = validationResult(req);
   try {
     const prodId = req.body.productId;
@@ -154,14 +180,23 @@ exports.postEditProduct = async (req, res) => {
         validationResult: errors.array(),
       });
     }
-    
+
+    const product = await Product.findById(prodId);
+    if (!product) {
+      console.log("Product not found.");
+      return res.redirect("/admin/products");
+    }
+
     const updatedFields = {
       name: updatedName,
       price: updatedPrice,
-      desc: updatedDesc
-    }
+      desc: updatedDesc,
+    };
 
-    if(req.file) {
+    if (req.file) {
+      if (product.imgUrl) {
+        file.deleteFile(product.imgUrl);
+      }
       updatedFields.imgUrl = req.file.path;
     }
 
@@ -186,7 +221,7 @@ exports.postEditProduct = async (req, res) => {
 };
 
 // delete product
-exports.postDeleteProduct = (req, res) => {
+exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
 
   // Check if the product exists in the user's cart
@@ -212,8 +247,19 @@ exports.postDeleteProduct = (req, res) => {
       });
   } else {
     // If product is not in the cart, directly delete it from the database
-    Product.findByIdAndDelete(prodId)
-      // .deleteOne()
+    // Product.findByIdAndDelete(prodId)
+    // .deleteOne()
+    Product.findById(prodId)
+      .then((product) => {
+        if (!product) {
+          throw new Error("Product not found.");
+        }
+        file.deleteFile(product.imgUrl);
+        return Product.deleteOne({
+          _id: prodId,
+          userId: req.user._id,
+        });
+      })
       .then((result) => {
         console.log("Product deleted successfully");
         res.redirect("/admin/products");

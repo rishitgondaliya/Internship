@@ -33,6 +33,17 @@
         </article>
         <% } %>
       </div>
+      <div class="pagination">
+        <% if (hasPrevPage) { %>
+          <a href="?page=<%= prevPage %>">Previous</a>
+        <% } %>
+      
+        <span> Page <%= currentPage %> of <%= lastPage %> </span>
+      
+        <% if (hasNextPage) { %>
+          <a href="?page=<%= nextPage %>">Next</a>
+        <% } %>
+      </div>
       <% } else { %>
       <!-- If there are no products -->
       <h1>No Products Found !</h1>
