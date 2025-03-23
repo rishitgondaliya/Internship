@@ -20,7 +20,6 @@ exports.postAddProduct = async (req, res, next) => {
   const errors = validationResult(req);
   const { name, price, desc } = req.body;
   const imgUrl = req.file;
-  console.log(imgUrl);
 
   if (!imgUrl) {
     return res.status(422).render("admin/add-product", {
@@ -59,6 +58,7 @@ exports.postAddProduct = async (req, res, next) => {
     await product.save(); // mongoose provides save() method by default
 
     console.log("Product added successfully:");
+    console.log(`Name: ${name}, ID: ${product._id.toString()}`);
     res.redirect("/admin/products");
   } catch (err) {
     // return res.status(500).render("admin/add-product", {
@@ -79,7 +79,7 @@ exports.postAddProduct = async (req, res, next) => {
 
 // get list of all products
 exports.getProducts = (req, res) => {
-  const page = req.query.page || 1;
+  const page = parseInt(req.query.page) || 1;
   const itemsPerPage = 3;
   let totalProducts;
 
@@ -212,6 +212,7 @@ exports.postEditProduct = async (req, res, next) => {
     }
 
     console.log("Product details updated successfully.");
+    console.log(`Name: ${updatedName}, ID: ${updatedProduct._id.toString()}`);
     res.redirect("/admin/products");
   } catch (err) {
     const error = new Error("Error while updating the product details");
@@ -223,6 +224,8 @@ exports.postEditProduct = async (req, res, next) => {
 // delete product
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
+  let deletedProductName;
+  let deletedProductId;
 
   // Check if the product exists in the user's cart
   if (
@@ -231,16 +234,27 @@ exports.postDeleteProduct = (req, res, next) => {
       (p) => p.productId.toString() === prodId.toString()
     )
   ) {
-    req.user
-      .deleteCartItem(prodId) // remove from the cart
+    return req.user
+      .deleteCartItem(prodId) // Remove from the cart
       .then(() => {
-        Product.findByIdAndDelete(prodId); // delete from database
+        return Product.findById(prodId);
+      })
+      .then((product) => {
+        if (!product) {
+          throw new Error("Product not found.");
+        }
+        deletedProductName = product.name;
+        deletedProductId = product._id.toString();
+        file.deleteFile(product.imgUrl);
+        return Product.deleteOne({ _id: prodId, userId: req.user._id }); // Delete from database
       })
       .then(() => {
         console.log("Product deleted successfully");
+        console.log(`Name: ${deletedProductName}, ID: ${deletedProductId}`);
         res.redirect("/admin/products");
       })
       .catch((err) => {
+        console.error("Error while deleting the product:", err);
         const error = new Error("Error while deleting the product");
         error.httpStatusCode = 500;
         return next(error);
@@ -249,11 +263,15 @@ exports.postDeleteProduct = (req, res, next) => {
     // If product is not in the cart, directly delete it from the database
     // Product.findByIdAndDelete(prodId)
     // .deleteOne()
+    let deletedProductName;
+    let deletedProductId;
     Product.findById(prodId)
       .then((product) => {
         if (!product) {
           throw new Error("Product not found.");
         }
+        deletedProductName = product.name;
+        deletedProductId = product._id.toString();
         file.deleteFile(product.imgUrl);
         return Product.deleteOne({
           _id: prodId,
@@ -262,12 +280,81 @@ exports.postDeleteProduct = (req, res, next) => {
       })
       .then((result) => {
         console.log("Product deleted successfully");
+        console.log(`Name: ${deletedProductName}, ID: ${deletedProductId}`);
         res.redirect("/admin/products");
       })
       .catch((err) => {
         const error = new Error("Error while deleting the product");
         error.httpStatusCode = 500;
         return next(error);
+      });
+  }
+};
+
+exports.deleteProduct = (req, res, next) => {
+  const prodId = req.params.productId;
+  let deletedProductName;
+  let deletedProductId;
+
+  // Check if the product exists in the user's cart
+  if (
+    req.user.cart.items.some(
+      //  returns true if at least one item matches the condition.
+      (p) => p.productId.toString() === prodId.toString()
+    )
+  ) {
+    return req.user
+      .deleteCartItem(prodId) // Remove from the cart
+      .then(() => {
+        return Product.findById(prodId);
+      })
+      .then((product) => {
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
+        deletedProductName = product.name;
+        deletedProductId = product._id.toString();
+        file.deleteFile(product.imgUrl);
+        return Product.deleteOne({ _id: prodId, userId: req.user._id }); // Delete from database
+      })
+      .then(() => {
+        console.log("Product deleted successfully");
+        console.log(`Name: ${deletedProductName}, ID: ${deletedProductId}`);
+        res.status(200).json({
+          message: "Product deleted successfully",
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "Could not delete product",
+        });
+      });
+  } else {
+    // If product is not in the cart, directly delete it from the database
+    // Product.findByIdAndDelete(prodId)
+    // .deleteOne()
+    let deletedProductName;
+    let deletedProductId;
+    Product.findById(prodId)
+      .then((product) => {
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
+        deletedProductName = product.name;
+        deletedProductId = product._id.toString();
+        file.deleteFile(product.imgUrl);
+        return Product.deleteOne({
+          _id: prodId,
+          userId: req.user._id,
+        });
+      })
+      .then((result) => {
+        console.log("Product deleted successfully");
+        console.log(`Name: ${deletedProductName}, ID: ${deletedProductId}`);
+        res.status(200).json({ message: "Product deleted successfully" });
+      })
+      .catch((err) => {
+        res.status(500).json({ message: "Could not delete product" });
       });
   }
 };
