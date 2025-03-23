@@ -1,0 +1,44 @@
+<%- include('../includes/main.ejs') %>
+
+    <main> 
+        <div class="grid">
+            <% products.forEach(p => { %>
+                <article class="card product-item cart">
+                    <header class="card-header">
+                        <h2 class="product-title"><%= p.productId.name %></h2>
+                    </header>
+                    <div class="card-img">
+                        <img
+                            src="<%= p.productId.imgUrl %>"
+                            alt="<%= p.productId.name %>" 
+                        />
+                    </div>
+                    <div class="card-content">
+                        <h2 class="product-price">Rs. <%= p.productId.price.toLocaleString('en-IN') %>/-</h2>
+                        <p class="product-desc"><%= p.productId.desc %></p>
+                    </div>
+                    <div style="padding: 0 0.75rem 0.75rem;">
+                        <h4 style="margin: 0;">Qty : <%= p.quantity %></h4>
+                    </div>
+                </article>
+            <% }) %>
+        </div>
+        <div style="text-align: center;">
+            <h2>Total = Rs. <%= totalAmount  %></h2>
+        </div>
+        <div class="order-now">
+            <button id="order-btn" class="btn">CHECKOUT</button>
+            <script src="https://js.stripe.com/v3/"></script>
+            <script>
+                const stripe = Stripe('pk_test_51R52ySP6LmiOq68wIyA8ae8bc9f9sdaCaLYqIVj5bJGvgdfr2zoeWjsj0xYUMEhRLmbbodhBW3Alacm7SXZpOdvC00t7ZnF3OD');
+                const orderBtn = document.getElementById('order-btn')
+                orderBtn.addEventListener('click', async () => {
+                    stripe.redirectToCheckout({
+                        sessionId: '<%= sessionId %>',
+                    })
+                })
+            </script>
+        </div>
+    </main>
+</body>
+</html>
