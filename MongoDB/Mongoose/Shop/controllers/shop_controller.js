@@ -2,6 +2,9 @@ const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 const PDFDocument = require("pdfkit");
+const stripe = require("stripe")(
+  "sk_test_51R52ySP6LmiOq68wdPDdLHbtJpiQoxbmNehLsammUMSUA7nF2jNBHI04LdJqpWzKxvBIDjbT05ewwmbY0vw5FUaN00Padwohi1"
+);
 
 const Product = require("../models/product");
 const Order = require("../models/order");
@@ -312,4 +315,51 @@ exports.getInvoice = async (req, res, next) => {
     console.error("Error fetching invoice:", err);
     res.status(500).json({ message: "Internal Server Error" });
   }
+};
+
+exports.getCheckOut = (req, res, next) => {
+  let products;
+  let total = 0;
+
+  req.user
+    .populate("cart.items.productId")
+    .then((user) => {
+      products = user.cart.items;
+      products.forEach((p) => {
+        total += p.quantity * p.productId.price;
+      });
+
+      return stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: products.map((p) => ({
+          price_data: {
+            currency: "inr",
+            product_data: {
+              name: p.productId.name,
+              description: p.productId.desc, 
+            },
+            unit_amount: p.productId.price * 100, // Amount must be in paise (multiply by 100)
+          },
+          quantity: p.quantity,
+        })),
+        mode: "payment",
+        success_url: `${req.protocol}://${req.get("host")}/checkout/success`, // http://localhost/checkout/success
+        cancel_url: `${req.protocol}://${req.get("host")}/checkout/cancel`,
+      });
+    })
+    .then((session) => {
+      res.render("shop/checkout", {
+        pageTitle: "Checkout",
+        path: "/checkout",
+        products: products,
+        totalAmount: total,
+        sessionId: session.id, // This must be used in EJS
+      });
+    })
+    .catch((err) => {
+      console.error("Error creating checkout session:", err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
