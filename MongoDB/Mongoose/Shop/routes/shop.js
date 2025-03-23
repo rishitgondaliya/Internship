@@ -19,8 +19,14 @@ app.post('/delete-cart-item', isAuth, shopController.postDeleteCartItem)
 
 app.get('/orders', isAuth, shopController.getOrders)
 
-app.post('/create-order', isAuth, shopController.postOrder)
+// app.post('/create-order', isAuth, shopController.postOrder)
 
 app.get('/orders/:orderId', isAuth, shopController.getInvoice);
+
+app.get('/checkout', isAuth, shopController.getCheckOut)
+
+app.get('/checkout/success', isAuth, shopController.postOrder)
+
+app.get('/checkout/cancel', isAuth, shopController.getCheckOut)
 
 module.exports = app;
