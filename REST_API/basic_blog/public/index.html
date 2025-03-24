@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog API Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        background-color: #f4f4f4;
+        text-align: center;
+      }
+
+      h1,
+      h2 {
+        color: #333;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      input,
+      textarea {
+        width: 50%;
+        padding: 10px;
+        margin: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      textarea {
+        height: 100px;
+      }
+
+      pre {
+        background-color: white;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        text-align: left;
+        max-width: 50%;
+        margin: auto;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <button onclick="fetchPosts()">Get Posts</button>
+    <h2>Create Post</h2>
+    <input type="text" id="title" placeholder="Title" /><br />
+    <textarea id="content" placeholder="Content"></textarea><br />
+    <button onclick="createPost()">Create Post</button>
+    <h2>Response</h2>
+    <pre id="output"></pre>
+  </body>
+  <script>
+    async function fetchPosts() {
+      const response = await fetch("http://localhost:8080/feed/posts");
+      const data = await response.json();
+      document.getElementById("output").innerText = JSON.stringify(
+        data,
+        null,
+        2
+      );
+    }
+
+    async function createPost() {
+      const title = document.getElementById("title").value;
+      const content = document.getElementById("content").value;
+
+      const response = await fetch("http://localhost:8080/feed/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content }),
+      });
+
+      const data = await response.json();
+      document.getElementById("output").innerText = JSON.stringify(
+        data,
+        null,
+        2
+      );
+    }
+  </script>
+</html>
