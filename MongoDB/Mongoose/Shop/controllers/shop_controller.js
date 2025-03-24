@@ -2,9 +2,11 @@ const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 const PDFDocument = require("pdfkit");
-const stripe = require("stripe")(
-  "sk_test_51R52ySP6LmiOq68wdPDdLHbtJpiQoxbmNehLsammUMSUA7nF2jNBHI04LdJqpWzKxvBIDjbT05ewwmbY0vw5FUaN00Padwohi1"
-);
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const Product = require("../models/product");
 const Order = require("../models/order");
@@ -336,7 +338,7 @@ exports.getCheckOut = (req, res, next) => {
             currency: "inr",
             product_data: {
               name: p.productId.name,
-              description: p.productId.desc, 
+              description: p.productId.desc,
             },
             unit_amount: p.productId.price * 100, // Amount must be in paise (multiply by 100)
           },
