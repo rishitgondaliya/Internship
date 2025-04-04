@@ -20,7 +20,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //   })
 // );
 
-exports.getSignup = (req, res) => {
+exports.getSignup = (req, res) => { 
   let message = req.flash("error")[0] || null;
   const formData = req.session.formData || {};
   delete req.session.formData;
