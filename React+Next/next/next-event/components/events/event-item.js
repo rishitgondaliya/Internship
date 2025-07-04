@@ -13,7 +13,7 @@ export default function EventItem(props) {
     year: "numeric",
   });
 
-  // const formatedAddress = location.replace(", ", "\n");
+  const formatedAddress = location.replace(", ", "\n");
   const link = `/events/${id}`;
   return (
     <li className={classes.item}>

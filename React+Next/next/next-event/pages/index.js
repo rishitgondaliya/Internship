@@ -5,6 +5,7 @@ export default function HomePage() {
   const featuredEvents = getFeatureEvents();
   return (
     <div>
+      <h1 style={{ textAlign: "center" }}>Featured events</h1>
       <EventList items={featuredEvents} />
     </div>
   );
