@@ -5,8 +5,10 @@ export default function LastSalePage(props) {
   const [salesState, setSalesState] = useState(props.sales);
   // const [loadingState, setLoadingState] = useState(false);
 
+  const fetcher = (...args) => fetch(...args).then((res) => res.json());
   const { data, error } = useSWR(
-    "https://react-6c4c6-default-rtdb.firebaseio.com/sales.json"
+    "https://react-6c4c6-default-rtdb.firebaseio.com/sales.json",
+    fetcher
   );
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export default function LastSalePage(props) {
     return <h1>Something went wrong...</h1>;
   }
 
-  if (!salesState || !data) {
+  if (!salesState && !data) {
     return <h1>Loading...</h1>;
   }
 
