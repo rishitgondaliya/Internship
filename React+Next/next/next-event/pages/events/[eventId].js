@@ -1,26 +1,19 @@
-import { useRouter } from "next/router";
-import { getEventById } from "../../dummy-data";
+import Head from "next/head";
+import { getEventById, getFeaturedEvents } from "../../helpers/api-util";
 import { Fragment } from "react";
 import EventSummary from "../../components/event-detail/event-summary";
 import EventLogistics from "../../components/event-detail/event-logistics";
 import EventContent from "../../components/event-detail/event-content";
-import ErrorAlert from "../../components/ui/error-alert";
 import Button from "../../components/ui/button";
 
-export default function EventDetailPage() {
-  const router = useRouter();
-  const { eventId } = router.query;
-
-  if (!eventId) {
-    return <p>Loading...</p>;
-  }
-  const event = getEventById(eventId);
+export default function EventDetailPage(props) {
+  const event = props.event;
   if (!event) {
     return (
       <Fragment>
-        <ErrorAlert>
-          <p>No event found!</p>
-        </ErrorAlert>
+        <div className="center">
+          <p>Loading...</p>
+        </div>
         <div className="center">
           <Button link="/events">Show All Events</Button>
         </div>
@@ -30,6 +23,10 @@ export default function EventDetailPage() {
 
   return (
     <Fragment>
+      <Head>
+        <title>{event.title}</title>
+        <meta name="description" content={event.description} />
+      </Head>
       <EventSummary title={event.title} />
       <EventLogistics
         date={event.date}
@@ -42,4 +39,24 @@ export default function EventDetailPage() {
       </EventContent>
     </Fragment>
   );
+}
+
+export async function getStaticProps(context) {
+  const eId = context.params.eventId;
+  const event = await getEventById(eId);
+  return {
+    props: {
+      event: event,
+    },
+    revalidate: 30,
+  };
+}
+
+export async function getStaticPaths() {
+  const events = await getFeaturedEvents();
+  const paths = events.map((e) => ({ params: { eventId: e.id } }));
+  return {
+    paths: paths,
+    fallback: "blocking",
+  };
 }
