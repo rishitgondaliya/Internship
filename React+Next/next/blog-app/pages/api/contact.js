@@ -1,47 +1,43 @@
-import { MongoClient } from "mongodb";
+import clientPromise from "../../lib/db.util";
 
 export default async function handler(req, res) {
-  if (req.method === "POST") {
-    const { email, name, message } = req.body;
-    if (
-      !email ||
-      !email.includes("@") ||
-      !name ||
-      name.trim() === "" ||
-      !message ||
-      message.trim() === ""
-    ) {
-      return res.status(422).json({ message: "Invalid parameters" });
-    }
-    const newMessage = {
-      email,
-      name,
-      message,
-    };
-    let client;
-    const connectionString = `${process.env.mongo_url}`;
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
 
-    try {
-      client = await MongoClient.connect(connectionString, {
-        useUnifiedTopology: true,
-      });
-    } catch (error) {
-      return res.status(500).json({ message: "Could not connect to database" });
-    }
+  const { email, name, message } = req.body;
 
-    const db = client.db();
+  // Basic input validation
+  if (
+    !email ||
+    !email.includes("@") ||
+    !name ||
+    name.trim() === "" ||
+    !message ||
+    message.trim() === ""
+  ) {
+    return res.status(422).json({ message: "Invalid input" });
+  }
 
-    try {
-      const result = await db.collection("messages").insertOne(newMessage);
-      newMessage.id = result.insertedId;
-    } catch (error) {
-      return res.status(500).json({ message: "Could not store message" });
-    }
+  const newMessage = {
+    email,
+    name,
+    message,
+    createdAt: new Date(),
+  };
 
-    client.close();
+  try {
+    const client = await clientPromise;
+    const db = client.db(); // Uses DB from connection URI
 
-    res
-      .status(201)
-      .json({ message: "Message stored successfully", message: newMessage });
+    const result = await db.collection("messages").insertOne(newMessage);
+
+    return res.status(201).json({
+      message: "Message stored successfully",
+      data: { id: result.insertedId, ...newMessage },
+    });
+  } catch (error) {
+    console.error("MongoDB error:", error);
+    return res.status(500).json({ message: "Storing message failed!" });
   }
 }
